@@ -39,38 +39,33 @@
 **
 ****************************************************************************/
 
-#include <QtQml/qqml.h>
-#include <QQmlEngine>
-#include <QVariant>
-#include <QStringList>
-#include "testplugin.h"
-#include "testcppmodels.h"
+#ifndef QQUICKCONTROLSPRIVATE_P_H
+#define QQUICKCONTROLSPRIVATE_P_H
 
-void TestPlugin::registerTypes(const char *uri)
-{
-    // cpp models
-    qmlRegisterType<TestObject>(uri, 1, 0, "TestObject");
-    qmlRegisterType<TestItemModel>(uri, 1, 0, "TestItemModel");
-    qmlRegisterSingletonType<SystemInfo>(uri, 1, 0, "SystemInfo", systeminfo_provider);
-}
+#include "qqml.h"
 
-void TestPlugin::initializeEngine(QQmlEngine *engine, const char * /*uri*/)
-{
-    QObjectList model_qobjectlist;
-    model_qobjectlist << new TestObject(0);
-    model_qobjectlist << new TestObject(1);
-    model_qobjectlist << new TestObject(2);
-    engine->rootContext()->setContextProperty("model_qobjectlist", QVariant::fromValue(model_qobjectlist));
+QT_BEGIN_NAMESPACE
 
-    QStringList model_qstringlist;
-    model_qstringlist << QStringLiteral("A");
-    model_qstringlist << QStringLiteral("B");
-    model_qstringlist << QStringLiteral("C");
-    engine->rootContext()->setContextProperty("model_qstringlist", model_qstringlist);
+class QQuickControlsPrivate {
 
-    QList<QVariant> model_qvarlist;
-    model_qvarlist << 3;
-    model_qvarlist << 2;
-    model_qvarlist << 1;
-    engine->rootContext()->setContextProperty("model_qvarlist", model_qvarlist);
-}
+public:
+
+    inline static QObject *registerTooltipModule(QQmlEngine *engine, QJSEngine *jsEngine)
+    {
+        Q_UNUSED(engine);
+        Q_UNUSED(jsEngine);
+        return new QQuickTooltip();
+    }
+
+    inline static QObject *registerSettingsModule(QQmlEngine *engine, QJSEngine *jsEngine)
+    {
+        Q_UNUSED(engine);
+        Q_UNUSED(jsEngine);
+        return new QQuickControlSettings(engine);
+    }
+
+};
+
+QT_END_NAMESPACE
+
+#endif // QQUICKCONTROLSPRIVATE_P_H
