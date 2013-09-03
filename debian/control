@@ -10,10 +10,10 @@ Uploaders: Fathi Boudra <fabo@debian.org>,
            Timo Jyrinki <timo@debian.org>
 Build-Depends: debhelper (>= 9),
                dpkg-dev (>= 1.16.1),
-               libqt5v8-5-private-dev (>= 5.1.0~),
+               libqt5v8-5-private-dev (>= 5.1.1~),
                pkg-kde-tools,
-               qtbase5-private-dev (>= 5.1.0+dfsg~),
-               qtdeclarative5-private-dev (>= 5.1.0~)
+               qtbase5-private-dev (>= 5.1.1+dfsg-2~),
+               qtdeclarative5-private-dev (>= 5.1.1~)
 Standards-Version: 3.9.4
 Homepage: http://qt-project.org/
 Vcs-Git: git://anonscm.debian.org/pkg-kde/qt/qtquickcontrols.git
@@ -34,7 +34,9 @@ Description: Qt 5 Quick Controls module
 Package: qtdeclarative5-quicklayouts-plugin
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: libqt5qml-quickcontrols (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: Qt 5 Quick Controls development files
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.

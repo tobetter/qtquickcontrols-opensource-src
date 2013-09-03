@@ -1,3 +1,15 @@
+qtquickcontrols-opensource-src (5.1.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Tighten Qt 5 build dependencies.
+  * Clean up some copyright stuff:
+    - Fix path to snippets under BSD-3-clause.
+  * Use years intervals in FSF's copyright for qquerytransformparser.cpp.
+  * Make qtdeclarative5-quicklayouts-plugin depend on libqt5qml-quickcontrols.
+    Thanks Scott Kitterman for pointing this out.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Tue, 03 Sep 2013 11:50:31 -0300
+
 qtquickcontrols-opensource-src (5.1.0-2) unstable; urgency=low
 
   * Add missing copyright holder.

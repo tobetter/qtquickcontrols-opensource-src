@@ -40,29 +40,47 @@
 
 import QtQuick 2.1
 import QtQuick.Controls 1.0
-import QtQuick.Controls.Private 1.0
 
-/*!
-    \qmltype FocusFrame
-    \internal
-    \inqmlmodule QtQuick.Controls.Private 1.0
-*/
-Item {
-    id: root
-    activeFocusOnTab: false
-    Accessible.role: Accessible.StatusBar
-
-    anchors.topMargin: focusMargin
-    anchors.leftMargin: focusMargin
-    anchors.rightMargin: focusMargin
-    anchors.bottomMargin: focusMargin
-
-    property int focusMargin: loader.item ? loader.item.margin : -3
-
-    Loader {
-        id: loader
-        z: 2
-        anchors.fill: parent
-        sourceComponent: Qt.createComponent(Settings.style + "/FocusFrameStyle.qml", root)
+Column {
+    width: 200
+    height: 200
+    property alias control1: _control1
+    property alias control2: _control2
+    GroupBox  {
+        id: _control1
+        title: "control1"
+        checkable: true
+        Column {
+            objectName: "column1"
+            property alias child1: _child1
+            property alias child2: _child2
+            anchors.fill: parent
+            Button {
+                id: _child1
+                text: "child1"
+            }
+            Button {
+                id: _child2
+                text: "child2"
+            }
+        }
+    }
+    GroupBox  {
+        id: _control2
+        title: "control2"
+        Column {
+            objectName: "column2"
+            property alias child3: _child3
+            property alias child4: _child4
+            anchors.fill: parent
+            Button {
+                id: _child3
+                text: "child3"
+            }
+            Button {
+                id: _child4
+                text: "child4"
+            }
+        }
     }
 }
