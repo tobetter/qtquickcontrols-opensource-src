@@ -19,27 +19,40 @@ Homepage: http://qt-project.org/
 Vcs-Git: git://anonscm.debian.org/pkg-kde/qt/qtquickcontrols.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-kde/qt/qtquickcontrols.git;a=summary
 
-Package: libqt5qml-quickcontrols
+Package: qtdeclarative5-controls-plugin
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: libqt5qml5, ${misc:Depends}, ${shlibs:Depends}
-Description: Qt 5 Quick Controls module
+Depends: libqt5qml5, qtdeclarative5-quicklayouts-plugin (= ${binary:Version}),
+ ${misc:Depends}, ${shlibs:Depends}
+Breaks: libqt5qml-quickcontrols (<< 5.1.1-2~)
+Replaces: libqt5qml-quickcontrols (<< 5.1.1-2~)
+Description: Qt 5 Quick Controls module plugin
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.
  .
  The Qt Quick Controls module provides a set of controls that can be used to
  build complete interfaces in Qt Quick.
 
-Package: qtdeclarative5-quicklayouts-plugin
-Section: libdevel
-Architecture: any
-Depends: libqt5qml-quickcontrols (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Description: Qt 5 Quick Controls development files
+Package: libqt5qml-quickcontrols
+Architecture: all
+Depends: qtdeclarative5-controls-plugin, ${misc:Depends}
+Section: oldlibs
+Description: transitional dummy package for Qt 5 Quick Controls module plugin
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.
  .
- This package contains the development files used for building Qt 5
- applications using QtQuickControls library.
+ This is a transitional dummy package which can be safely removed.
+
+Package: qtdeclarative5-quicklayouts-plugin
+Section: libdevel
+Multi-Arch: same
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Qt 5 Quick Layouts module plugin
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ The Qt Quick Layouts modules provides a set of layouts that can be used to
+ build complete interfaces in Qt Quick.
