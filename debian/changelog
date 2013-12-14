@@ -1,3 +1,11 @@
+qtquickcontrols-opensource-src (5.2.0-1) experimental; urgency=low
+
+  * New upstream release.
+  * Bump build dependencies, removing libqt5v8-5-private-dev which is no
+    longer used.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Fri, 13 Dec 2013 22:34:11 -0300
+
 qtquickcontrols-opensource-src (5.1.1-2) unstable; urgency=low
 
   * Rename libqt5qml-quickcontrols to qtdeclarative5-controls-plugin to
