@@ -11,11 +11,18 @@ export QT_SELECT := qt5
 %:
 	dh $@ --parallel --with pkgkde_symbolshelper
 
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf doc src/controls/controls.qrc
+
 override_dh_auto_configure:
 	qmake
 
+override_dh_auto_build-indep:
+	dh_auto_build -Smakefile -- docs
+
+override_dh_auto_install-indep:
+	make INSTALL_ROOT=$(CURDIR)/debian/tmp install_docs
+
 override_dh_install:
 	dh_install --fail-missing
-
-override_dh_builddeb:
-	dh_builddeb -- -Zxz
