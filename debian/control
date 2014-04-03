@@ -21,37 +21,55 @@ Vcs-Git: git://anonscm.debian.org/pkg-kde/qt/qtquickcontrols.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-kde/qt/qtquickcontrols.git
 
 Package: qtdeclarative5-controls-plugin
+Architecture: all
+Section: oldlibs
+Depends: qml-module-qtquick-controls, ${misc:Depends}
+Description: transitional dummy package for Qt 5 Quick Controls QML module
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ This is a transitional dummy package which can be safely removed.
+
+Package: qml-module-qtquick-controls
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: libqt5qml5, qtdeclarative5-quicklayouts-plugin (= ${binary:Version}),
- ${misc:Depends}, ${shlibs:Depends}
-Breaks: libqt5qml-quickcontrols (<< 5.1.1-2~)
-Replaces: libqt5qml-quickcontrols (<< 5.1.1-2~)
-Description: Qt 5 Quick Controls module plugin
+Depends: libqt5qml5,
+         qml-module-qtquick-layouts (= ${binary:Version}),
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: libqt5qml-quickcontrols (<< 5.1.1-2~),
+        qtdeclarative5-controls-plugin (<< 5.2.1-4~)
+Replaces: libqt5qml-quickcontrols (<< 5.1.1-2~),
+          qtdeclarative5-controls-plugin (<< 5.2.1-4~)
+Description: Qt 5 Quick Controls QML module
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.
  .
  The Qt Quick Controls module provides a set of controls that can be used to
  build complete interfaces in Qt Quick.
 
-Package: libqt5qml-quickcontrols
-Architecture: all
-Depends: qtdeclarative5-controls-plugin, ${misc:Depends}
+Package: qtdeclarative5-quicklayouts-plugin
 Section: oldlibs
-Description: transitional dummy package for Qt 5 Quick Controls module plugin
+Architecture: all
+Depends: qml-module-qtquick-layouts, ${misc:Depends}
+Description: transitional dummy package for Qt 5 Quick Layouts QML module
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.
  .
- This is a transitional dummy package which can be safely removed.
+ This is a transitional dummy package for qml-module-qtquick-layouts
+ which can be safely removed.
 
-Package: qtdeclarative5-quicklayouts-plugin
+Package: qml-module-qtquick-layouts
 Section: libdevel
 Multi-Arch: same
 Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Description: Qt 5 Quick Layouts module plugin
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Breaks: qtdeclarative5-quicklayouts-plugin (<< 5.2.1-4~)
+Replaces: qtdeclarative5-quicklayouts-plugin (<< 5.2.1-4~)
+Description: Qt 5 Quick Layouts QML module
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.
  .
