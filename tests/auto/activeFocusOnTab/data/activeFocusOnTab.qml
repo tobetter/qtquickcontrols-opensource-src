@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Controls 1.1
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 
 Item {
     id: main
@@ -84,6 +84,12 @@ Item {
             id: combobox;
             objectName: "combobox"
             model: choices;
+        }
+        ComboBox {
+            id: editable_combobox;
+            objectName: "editable_combobox"
+            model: choices;
+            editable: true;
         }
         GroupBox {
             id: group1

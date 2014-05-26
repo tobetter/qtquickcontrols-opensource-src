@@ -45,9 +45,13 @@
 #include "qquickexclusivegroup_p.h"
 #include "qquickmenu_p.h"
 #include "qquickmenubar_p.h"
+#include "qquickpopupwindow_p.h"
 #include "qquickstack_p.h"
 #include "qquickdesktopiconprovider_p.h"
 #include "qquickselectionmode_p.h"
+
+#include "Private/qquickcalendarmodel_p.h"
+#include "Private/qquickrangeddate_p.h"
 #include "Private/qquickrangemodel_p.h"
 #include "Private/qquickwheelarea_p.h"
 #include "Private/qquicktooltip_p.h"
@@ -74,6 +78,7 @@ static const struct {
 } qmldir [] = {
     { "ApplicationWindow", 1, 0 },
     { "Button", 1, 0 },
+    { "Calendar", 1, 2 },
     { "CheckBox", 1, 0 },
     { "ComboBox", 1, 0 },
     { "GroupBox", 1, 0 },
@@ -108,8 +113,6 @@ void QtQuickControlsPlugin::registerTypes(const char *uri)
     initResources();
     qmlRegisterType<QQuickAction>(uri, 1, 0, "Action");
     qmlRegisterType<QQuickExclusiveGroup>(uri, 1, 0, "ExclusiveGroup");
-    qmlRegisterType<QQuickMenu>(uri, 1, 0, "MenuPrivate");
-    qmlRegisterType<QQuickMenuBar>(uri, 1, 0, "MenuBarPrivate");
     qmlRegisterType<QQuickMenuItem>(uri, 1, 0, "MenuItem");
     qmlRegisterUncreatableType<QQuickMenuItemType>(uri, 1, 0, "MenuItemType",
                                                    QLatin1String("Do not create objects of type MenuItemType"));
@@ -129,15 +132,22 @@ void QtQuickControlsPlugin::initializeEngine(QQmlEngine *engine, const char *uri
 {
     Q_UNUSED(uri);
 
-    // Register private API
+    // Register private API. Note that to use these types outside of the
+    // Qt Quick Controls module, both the public and private imports must be used.
     const char *private_uri = "QtQuick.Controls.Private";
     qmlRegisterType<QQuickAbstractStyle>(private_uri, 1, 0, "AbstractStyle");
+    qmlRegisterType<QQuickCalendarModel>(private_uri, 1, 0, "CalendarModel");
     qmlRegisterType<QQuickPadding>();
+    qmlRegisterType<QQuickRangedDate>(private_uri, 1, 0, "RangedDate");
     qmlRegisterType<QQuickRangeModel>(private_uri, 1, 0, "RangeModel");
     qmlRegisterType<QQuickWheelArea>(private_uri, 1, 0, "WheelArea");
     qmlRegisterType<QQuickSpinBoxValidator>(private_uri, 1, 0, "SpinBoxValidator");
     qmlRegisterSingletonType<QQuickTooltip>(private_uri, 1, 0, "Tooltip", QQuickControlsPrivate::registerTooltipModule);
     qmlRegisterSingletonType<QQuickControlSettings>(private_uri, 1, 0, "Settings", QQuickControlsPrivate::registerSettingsModule);
+
+    qmlRegisterType<QQuickMenu>(private_uri, 1, 0, "MenuPrivate");
+    qmlRegisterType<QQuickMenuBar>(private_uri, 1, 0, "MenuBarPrivate");
+    qmlRegisterType<QQuickPopupWindow>(private_uri, 1, 0, "PopupWindow");
 
 #ifdef QT_WIDGETS_LIB
     qmlRegisterType<QQuickStyleItem>(private_uri, 1, 0, "StyleItem");

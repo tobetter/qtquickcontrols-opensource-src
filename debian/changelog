@@ -1,3 +1,19 @@
+qtquickcontrols-opensource-src (5.3.0-1) experimental; urgency=medium
+
+  [ Dmitry Shachnev ]
+  * New upstream release.
+  * Bump Qt build-dependencies.
+  * Add qml-module-qtquick-dialogs and qml-module-qtquick-privatewidgets
+    packages, moved here from qtdeclarative-opensource-src.
+  * Add indep build-dependencies on qtbase5-doc-html and
+    qtdeclarative5-doc-html, needed by the docs.
+  * Add new qtquickcontrols5-examples package, install examples.
+
+  [ Lisandro Damián Nicanor Pérez Meyer ]
+  * Update debian/copyright.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Mon, 26 May 2014 19:07:49 -0300
+
 qtquickcontrols-opensource-src (5.2.1-4) unstable; urgency=medium
 
   * Add qtdeclarative5-window-plugin as a qtdeclarative5-controls-plugin

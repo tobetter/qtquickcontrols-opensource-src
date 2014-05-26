@@ -3,7 +3,7 @@ Upstream-Name: qtquickcontrols-opensource-src
 Source: http://releases.qt-project.org/qt5/*/submodules/
 
 Files: *
-Copyright: 2012-2013 Digia Plc and/or its subsidiary(-ies)
+Copyright: 2012-2014 Digia Plc and/or its subsidiary(-ies)
            2013 Tasuku Suzuki <stasuku@gmail.com>
 License: LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
@@ -14,18 +14,24 @@ Copyright: 2007-2012 Fathi Boudra <fabo@debian.org>
            2007-2009 Ana Beatriz Guerrero Lopez <ana@debian.org>
            2005-2007 Brian Nelson <pyro@debian.org>
            2012-2013 Timo Jyrinki <timo.jyrinki@canonical.com>
-           2013 Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>
+           2013-2014 Dmitry Shachnev <mitya57@gmail.com>
+           2013-2014 Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>
 License: LGPL-2.1
 
 Files: examples/*
        src/src/layouts/doc/src/snippets/*
-Copyright: 2012-2013 Digia Plc and/or its subsidiary(-ies)
+       src/*.qml
+       tests/*.qml
+Copyright: 2012-2014 Digia Plc and/or its subsidiary(-ies)
+           2013 Tasuku Suzuki <stasuku@gmail.com>
 License: BSD-3-clause
+Comment: including all the qml files inside src/ and tests/ and their
+ subdirectories.
 
 Files: src/quickcontrols/parser/qquerytransformparser.cpp
 Copyright: 1984, 1989, 1990, 2000-2006 Free Software Foundation, Inc
            2012 Digia Plc and/or its subsidiary(-ies).
-License: LGPL-2.1 with Digia Qt LGPL Exception 1.1
+License: LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
 Files: *.qdoc
 Copyright: 2012 Digia Plc and/or its subsidiary(-ies).

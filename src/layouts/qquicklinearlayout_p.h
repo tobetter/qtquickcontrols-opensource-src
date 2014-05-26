@@ -62,6 +62,9 @@ class QQuickGridLayoutBase : public QQuickLayout
     Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection NOTIFY layoutDirectionChanged REVISION 1)
 
 public:
+
+    QQuickGridLayoutBase();
+
     explicit QQuickGridLayoutBase(QQuickGridLayoutBasePrivate &dd,
                                   Qt::Orientation orientation,
                                   QQuickItem *parent = 0);
@@ -83,7 +86,7 @@ protected:
     int itemCount() const Q_DECL_OVERRIDE;
 
     void rearrange(const QSizeF &size);
-    virtual void insertLayoutItems() = 0;
+    virtual void insertLayoutItems() {}
     void removeLayoutItem(QQuickItem *item);
     void itemChange(ItemChange change, const ItemChangeData &data);
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
@@ -103,6 +106,7 @@ private:
     Q_DECLARE_PRIVATE(QQuickGridLayoutBase)
 };
 
+class QQuickLayoutStyleInfo;
 
 class QQuickGridLayoutBasePrivate : public QQuickLayoutPrivate
 {
@@ -113,6 +117,13 @@ public:
                                     , m_isReady(false)
                                     , m_layoutDirection(Qt::LeftToRight)
                                     {}
+
+    void mirrorChange() Q_DECL_OVERRIDE
+    {
+        Q_Q(QQuickGridLayoutBase);
+        q->invalidate();
+    }
+
     QQuickGridLayoutEngine engine;
     Qt::Orientation orientation;
     unsigned m_disableRearrange : 1;
@@ -120,6 +131,7 @@ public:
     Qt::LayoutDirection m_layoutDirection : 2;
 
     QSet<QQuickItem *> m_ignoredItems;
+    QQuickLayoutStyleInfo *styleInfo;
 };
 
 /**********************************
@@ -173,8 +185,6 @@ class QQuickGridLayoutPrivate : public QQuickGridLayoutBasePrivate
     Q_DECLARE_PUBLIC(QQuickGridLayout)
 public:
     QQuickGridLayoutPrivate(): columns(-1), rows(-1), flow(QQuickGridLayout::LeftToRight) {}
-    qreal columnSpacing;
-    qreal rowSpacing;
     int columns;
     int rows;
     QQuickGridLayout::Flow flow;
@@ -211,7 +221,6 @@ class QQuickLinearLayoutPrivate : public QQuickGridLayoutBasePrivate
     Q_DECLARE_PUBLIC(QQuickLinearLayout)
 public:
     QQuickLinearLayoutPrivate() {}
-    qreal spacing;
 };
 
 

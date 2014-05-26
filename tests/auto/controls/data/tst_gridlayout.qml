@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
+import QtQuick 2.2
 import QtTest 1.0
 import QtQuick.Layouts 1.1
 
@@ -528,6 +528,25 @@ Item {
                     Layout.alignment: Qt.AlignRight
                     Layout.columnSpan: 2
                 }
+                Rectangle {
+                    // (3,0)
+                    baselineOffset: 7
+                    color: "red"
+                    Layout.row: 3
+                    Layout.column: 0
+                    Layout.preferredWidth: 10
+                    Layout.preferredHeight: 10
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+                }
+                Rectangle {
+                    // (3,1)
+                    baselineOffset: 7
+                    color: "red"
+                    Layout.preferredWidth: 10
+                    Layout.preferredHeight: 10
+                    Layout.alignment: Qt.AlignRight | Qt.AlignBaseline
+                }
+
             }
         }
 
@@ -535,30 +554,32 @@ Item {
         {
             var layout = layout_alignment_Component.createObject(container);
             layout.width = 60;
-            layout.height = 90;
+            layout.height = 100;
 
             compare(itemRect(layout.children[0]), [ 0,  0, 40, 40]);
             compare(itemRect(layout.children[1]), [40, 20, 20, 20]);
             compare(itemRect(layout.children[2]), [20, 40, 20, 20]);
             compare(itemRect(layout.children[3]), [45, 40, 10, 10]);
             compare(itemRect(layout.children[4]), [30, 60, 30, 30]);
+            compare(itemRect(layout.children[5]), [ 0, 90, 10, 10]);
+            compare(itemRect(layout.children[6]), [50, 90, 10, 10]);
 
 
             layout.children[1].Layout.alignment = Qt.AlignTop
-            waitForRendering(layout)
-            compare(itemRect(layout.children[1]), [40,  0, 20, 20]);
+            tryCompare(layout.children[1], "x", 40);
+            tryCompare(layout.children[1], "y", 0);
 
             layout.children[2].Layout.alignment = Qt.AlignLeft
-            waitForRendering(layout)
-            compare(itemRect(layout.children[2]), [0,  40, 20, 20]);
+            tryCompare(layout.children[2], "x", 0);
+            tryCompare(layout.children[2], "y", 40);
 
             layout.children[3].Layout.alignment = Qt.AlignLeft|Qt.AlignVCenter
-            waitForRendering(layout)
-            compare(itemRect(layout.children[3]), [40, 45, 10, 10]);
+            tryCompare(layout.children[3], "x", 40);
+            tryCompare(layout.children[3], "y", 45);
 
             layout.children[4].Layout.alignment = Qt.AlignLeft
-            waitForRendering(layout)
-            compare(itemRect(layout.children[4]), [0, 60, 30, 30]);
+            tryCompare(layout.children[4], "x", 0);
+            tryCompare(layout.children[4], "y", 60);
 
             layout.destroy();
         }
@@ -624,9 +645,23 @@ Item {
             layout.LayoutMirroring.enabled = false
             layout.layoutDirection = Qt.LeftToRight
             waitForRendering(layout)
+            verifyIsLeftToRight(layout);
             layout.LayoutMirroring.enabled = true
             layout.layoutDirection = Qt.RightToLeft
             waitForRendering(layout)
+            verifyIsLeftToRight(layout);
+
+            layout.LayoutMirroring.enabled = false
+            waitForRendering(layout)
+            verifyIsRightToLeft(layout)
+
+            layout.layoutDirection = Qt.LeftToRight
+            waitForRendering(layout)
+            verifyIsLeftToRight(layout);
+
+            layout.LayoutMirroring.enabled = true
+            waitForRendering(layout)
+            verifyIsRightToLeft(layout)
 
             layout.destroy();
         }
@@ -785,6 +820,105 @@ Item {
             compare(layout.implicitHeight, 20)
 
             layout.destroy();
+        }
+
+        Component {
+            id: layout_spacings_Component
+            GridLayout {
+                id: layout
+                Repeater {
+                    model: 2
+                    Rectangle {
+                        implicitWidth: 10
+                        implicitHeight: 10
+                    }
+                }
+            }
+        }
+
+        function test_spacings()
+        {
+            var layout = layout_spacings_Component.createObject(container);
+            waitForRendering(layout)
+
+            // breaks down below -19. This is acceptable, since it means that the implicit size of the layout is negative
+            var testSpacings = [Number.NaN, 0, 10, -5, -19]
+            layout.rowSpacing = 0
+            for (var i = 0; i < testSpacings.length; ++i) {
+                var sp = testSpacings[i]
+                if (isNaN(sp)) {
+                    sp = 5  // Test defaults
+                } else {
+                    layout.columnSpacing = sp
+                }
+                compare(itemRect(layout.children[0]), [ 0,  0,  10,  10])
+                compare(itemRect(layout.children[1]), [10 + sp,  0,  10,  10])
+                compare(layout.implicitWidth, 20 + sp)
+            }
+
+            // do not crash
+            layout.columnSpacing = -100
+            waitForRendering(layout)
+            verify(isFinite(layout.implicitWidth))
+            layout.destroy();
+        }
+
+        Component {
+            id: layout_alignToPixelGrid_Component
+            GridLayout {
+                columns: 3
+                rowSpacing: 0
+                columnSpacing: 2
+                Repeater {
+                    model: 3*3
+                    Rectangle {
+                        color: "red"
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                    }
+                }
+            }
+        }
+
+        function test_alignToPixelGrid()
+        {
+            var layout = layout_alignToPixelGrid_Component.createObject(container)
+            layout.width  = 30
+            layout.height = 28
+
+            var rectWidth = (layout.width - 2 * layout.columnSpacing)/3
+            var rectHeight = layout.height/3
+
+            waitForRendering(layout);
+
+            var sp = layout.columnSpacing
+            var idealGeom = [0,0,rectWidth,rectHeight]
+            for (var r = 0; r < 3; ++r) {
+                idealGeom[0] = 0
+                idealGeom[2] = rectWidth
+                for (var c = 0; c < 3; ++c) {
+                    var child = layout.children[3*r + c]
+                    var visualGeom = [child.x, child.y, child.x + child.width, child.y + child.height]
+
+                    // verify that visualGeom is an integer number
+                    for (var i = 0; i < 2; ++i)
+                        compare(visualGeom[i] % 1, 0)
+
+                    // verify that x,y is is inside idealGeom
+                    verify(visualGeom[0] >= idealGeom[0])
+                    verify(visualGeom[1] >= idealGeom[1])
+
+                    // verify that the visual size is no more than 1 pixel taller/wider than the ideal size.
+                    verify(visualGeom[2] <= idealGeom[2] + 1)
+                    verify(visualGeom[3] <= idealGeom[3] + 1)
+                    idealGeom[0] = idealGeom[2] + sp
+                    idealGeom[2] = idealGeom[0]  + rectWidth
+                }
+                idealGeom[1] = idealGeom[3]
+                idealGeom[3] = idealGeom[1]  + rectHeight
+            }
+
+            layout.destroy()
         }
     }
 }

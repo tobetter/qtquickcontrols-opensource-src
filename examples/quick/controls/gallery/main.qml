@@ -43,7 +43,7 @@
 
 
 import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.0
 import "content"
@@ -176,6 +176,7 @@ ApplicationWindow {
             }
             ToolButton { action: openAction }
             ToolButton {
+                Accessible.name: "Save as"
                 iconSource: "images/document-save-as.png"
                 tooltip: "(Pretend to) Save as..."
             }

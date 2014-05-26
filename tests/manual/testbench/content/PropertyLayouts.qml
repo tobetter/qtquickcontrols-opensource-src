@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Controls 1.1
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.0
 
 QtObject {
@@ -91,7 +91,7 @@ QtObject {
             onValueChanged: {
                 if (!ignoreUpdate) {
                     loader.item[name] = value
-                    if (name != "width" && name != "height") // We dont want to reset size when size changes
+                    if (name != "width" && name != "height") // We don't want to reset size when size changes
                         propertyChanged()
                 }
             }

@@ -53,12 +53,14 @@
 // We mean it.
 //
 
-#include "qgridlayoutengine_p.h"
+#include <QtGui/private/qgridlayoutengine_p.h>
+#include <QtGui/private/qlayoutpolicy_p.h>
+#include <QtCore/qmath.h>
+
 #include "qquickitem.h"
 #include "qquicklayout_p.h"
 #include "qdebug.h"
 QT_BEGIN_NAMESPACE
-
 
 class QQuickGridLayoutItem : public QGridLayoutItem {
 public:
@@ -111,14 +113,15 @@ public:
 
     void setGeometry(const QRectF &rect)
     {
-        const QRect r(rect.toRect());
-        const QSize newSize(r.size());
-        m_item->setPosition(r.topLeft());
-        QSizeF oldSize(m_item->width(), m_item->height());
+        const QSizeF oldSize(m_item->width(), m_item->height());
+        const QSizeF newSize = rect.size();
+        const QPointF topLeft(qCeil(rect.x()), qCeil(rect.y()));
+        m_item->setPosition(topLeft);
         if (newSize == oldSize) {
-            if (QQuickLayout *lay = qobject_cast<QQuickLayout *>(m_item))
+            if (QQuickLayout *lay = qobject_cast<QQuickLayout *>(m_item)) {
                 if (lay->arrangementIsDirty())
                     lay->rearrange(newSize);
+            }
         } else {
             m_item->setSize(newSize);
         }
@@ -135,7 +138,7 @@ private:
 
 class QQuickGridLayoutEngine : public QGridLayoutEngine {
 public:
-    QQuickGridLayoutEngine() : QGridLayoutEngine() {} //### not needed
+    QQuickGridLayoutEngine() : QGridLayoutEngine(Qt::AlignVCenter) { }
 
     int indexOf(QQuickItem *item) const {
         for (int i = 0; i < q_items.size(); ++i) {
