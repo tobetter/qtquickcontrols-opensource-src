@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Controls 1.1
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
 
 /*!
@@ -195,16 +195,16 @@ Control {
         an intermediate state. The accepted signal will only be sent
         if the text is in an acceptable state when enter is pressed.
 
-        Currently supported validators are \l{QtQuick2::IntValidator},
-        \l{QtQuick2::DoubleValidator}, and \l{QtQuick2::RegExpValidator}. An
+        Currently supported validators are \l{QtQuick::}{IntValidator},
+        \l{QtQuick::}{DoubleValidator}, and \l{QtQuick::}{RegExpValidator}. An
         example of using validators is shown below, which allows input of
         integers between 11 and 31 into the text field:
 
         \note This property is only applied when \l editable is \c true
 
         \qml
-        import QtQuick 2.1
-        import QtQuick.Controls 1.1
+        import QtQuick 2.2
+        import QtQuick.Controls 1.2
 
         ComboBox {
             editable: true
@@ -245,6 +245,8 @@ Control {
 
         \note If there is a \l validator set on the combobox,
         the signal will only be emitted if the input is in an acceptable state.
+
+        The corresponding handler is \c onAccepted.
     */
     signal accepted
 
@@ -257,6 +259,8 @@ Control {
         This signal is similar to currentIndex changed, but will only
         be emitted if the combo box index was changed by the user and not
         when set programatically.
+
+        The corresponding handler is \c onActivated.
     */
     signal activated(int index)
 
@@ -299,7 +303,9 @@ Control {
 
     activeFocusOnTab: true
 
+    Accessible.name: editable ? editText : currentText
     Accessible.role: Accessible.ComboBox
+    Accessible.editable: editable
 
     MouseArea {
         id: mouseArea
@@ -348,11 +354,11 @@ Control {
 
         anchors.fill: parent
         anchors.leftMargin: 8
-        anchors.rightMargin: __style.drowDownButtonWidth
+        anchors.rightMargin: __style.dropDownButtonWidth
 
         verticalAlignment: Text.AlignVCenter
 
-        renderType: Text.NativeRendering
+        renderType: __style ? __style.renderType : Text.NativeRendering
         selectByMouse: true
         color: __style.__syspal.text
         selectionColor: __style.__syspal.highlight
@@ -427,6 +433,7 @@ Control {
         }
 
         property bool allowComplete: false
+        Keys.forwardTo: comboBox
         Keys.onPressed: allowComplete = (event.key !== Qt.Key_Backspace && event.key !== Qt.Key_Delete);
 
         onTextChanged: {

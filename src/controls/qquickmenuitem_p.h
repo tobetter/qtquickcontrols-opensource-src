@@ -68,7 +68,8 @@ public:
     enum MenuItemType {
         Separator = 0,
         Item,
-        Menu
+        Menu,
+        ScrollIndicator
     };
 };
 
@@ -224,6 +225,7 @@ public:
 
 protected Q_SLOTS:
     void updateShortcut();
+    void updateCheckable();
     void updateChecked();
     void bindToAction(QQuickAction *action);
     void unbindFromAction(QObject *action);

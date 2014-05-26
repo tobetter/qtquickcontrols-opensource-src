@@ -44,6 +44,9 @@
 #include <qcoreapplication.h>
 #include <qqmlengine.h>
 #include <qdir.h>
+#include <QTouchDevice>
+#include <QGuiApplication>
+#include <QStyleHints>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,9 +75,13 @@ static bool fromResource(const QString &path)
 
 bool QQuickControlSettings::hasTouchScreen() const
 {
-#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined (Q_OS_BLACKBERRY)
+// QTBUG-36007
+#if defined(Q_OS_ANDROID)
     return true;
 #else
+    foreach (const QTouchDevice *dev, QTouchDevice::devices())
+        if (dev->type() == QTouchDevice::TouchScreen)
+            return true;
     return false;
 #endif
 }
@@ -168,6 +175,11 @@ qreal QQuickControlSettings::dpiScaleFactor() const
     return (qreal(qt_defaultDpiX()) / 96.0);
 #endif
     return 1.0;
+}
+
+qreal QQuickControlSettings::dragThreshold() const
+{
+    return qApp->styleHints()->startDragDistance();
 }
 
 

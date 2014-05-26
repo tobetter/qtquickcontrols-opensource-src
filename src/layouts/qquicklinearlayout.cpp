@@ -41,6 +41,7 @@
 
 #include "qquicklinearlayout_p.h"
 #include "qquickgridlayoutengine_p.h"
+#include "qquicklayoutstyleinfo_p.h"
 #include <QtCore/qnumeric.h>
 #include "qdebug.h"
 #include <limits>
@@ -175,14 +176,10 @@
 
 QT_BEGIN_NAMESPACE
 
-static qreal quickLayoutDefaultSpacing()
+QQuickGridLayoutBase::QQuickGridLayoutBase()
+    : QQuickLayout(*new QQuickGridLayoutBasePrivate)
 {
-    qreal spacing = 5.0;
-#ifndef Q_OS_MAC
-    // On mac the DPI is always 72 so we should not scale it
-    spacing = qRound(spacing * (qreal(qt_defaultDpiX()) / 96.0));
-#endif
-    return spacing;
+
 }
 
 QQuickGridLayoutBase::QQuickGridLayoutBase(QQuickGridLayoutBasePrivate &dd,
@@ -192,6 +189,7 @@ QQuickGridLayoutBase::QQuickGridLayoutBase(QQuickGridLayoutBasePrivate &dd,
 {
     Q_D(QQuickGridLayoutBase);
     d->orientation = orientation;
+    d->styleInfo = new QQuickLayoutStyleInfo;
 }
 
 Qt::Orientation QQuickGridLayoutBase::orientation() const
@@ -213,7 +211,7 @@ void QQuickGridLayoutBase::setOrientation(Qt::Orientation orientation)
 QSizeF QQuickGridLayoutBase::sizeHint(Qt::SizeHint whichSizeHint) const
 {
     Q_D(const QQuickGridLayoutBase);
-    return d->engine.sizeHint(whichSizeHint, QSizeF());
+    return d->engine.sizeHint(whichSizeHint, QSizeF(), d->styleInfo);
 }
 
 /*!
@@ -261,7 +259,8 @@ void QQuickGridLayoutBase::setAlignment(QQuickItem *item, Qt::Alignment alignmen
 
 QQuickGridLayoutBase::~QQuickGridLayoutBase()
 {
-    d_func()->m_isReady = false;
+    Q_D(QQuickGridLayoutBase);
+    d->m_isReady = false;
 
     /* Avoid messy deconstruction, should give:
         * Faster deconstruction
@@ -274,6 +273,7 @@ QQuickGridLayoutBase::~QQuickGridLayoutBase()
         QObject::disconnect(item, SIGNAL(implicitWidthChanged()), this, SLOT(invalidateSenderItem()));
         QObject::disconnect(item, SIGNAL(implicitHeightChanged()), this, SLOT(invalidateSenderItem()));
     }
+    delete d->styleInfo;
 }
 
 void QQuickGridLayoutBase::componentComplete()
@@ -499,9 +499,10 @@ void QQuickGridLayoutBase::rearrange(const QSizeF &size)
         qSwap(left, right);
     */
 
-    d->engine.setGeometries(QRectF(QPointF(0,0), size));
-
+    // Set m_dirty to false in case size hint changes during arrangement.
+    // This could happen if there is a binding like implicitWidth: height
     QQuickLayout::rearrange(size);
+    d->engine.setGeometries(QRectF(QPointF(0,0), size), d->styleInfo);
 }
 
 bool QQuickGridLayoutBase::shouldIgnoreItem(QQuickItem *child, QQuickLayoutAttached *&info, QSizeF *sizeHints)
@@ -534,32 +535,26 @@ bool QQuickGridLayoutBase::shouldIgnoreItem(QQuickItem *child, QQuickLayoutAttac
 QQuickGridLayout::QQuickGridLayout(QQuickItem *parent /* = 0*/)
     : QQuickGridLayoutBase(*new QQuickGridLayoutPrivate, Qt::Horizontal, parent)
 {
-    Q_D(QQuickGridLayout);
-    const qreal defaultSpacing = quickLayoutDefaultSpacing();
-    d->columnSpacing = defaultSpacing;
-    d->rowSpacing = defaultSpacing;
-    d->engine.setSpacing(defaultSpacing, Qt::Horizontal | Qt::Vertical);
 }
 
 /*!
     \qmlproperty real GridLayout::columnSpacing
 
     This property holds the spacing between each column.
-    The default value is \c 4.
+    The default value is \c 5.
 */
 qreal QQuickGridLayout::columnSpacing() const
 {
     Q_D(const QQuickGridLayout);
-    return d->columnSpacing;
+    return d->engine.spacing(Qt::Horizontal, d->styleInfo);
 }
 
 void QQuickGridLayout::setColumnSpacing(qreal spacing)
 {
     Q_D(QQuickGridLayout);
-    if (qIsNaN(spacing) || d->columnSpacing == spacing)
+    if (qIsNaN(spacing) || columnSpacing() == spacing)
         return;
 
-    d->columnSpacing = spacing;
     d->engine.setSpacing(spacing, Qt::Horizontal);
     invalidate();
 }
@@ -568,21 +563,20 @@ void QQuickGridLayout::setColumnSpacing(qreal spacing)
     \qmlproperty real GridLayout::rowSpacing
 
     This property holds the spacing between each row.
-    The default value is \c 4.
+    The default value is \c 5.
 */
 qreal QQuickGridLayout::rowSpacing() const
 {
     Q_D(const QQuickGridLayout);
-    return d->rowSpacing;
+    return d->engine.spacing(Qt::Vertical, d->styleInfo);
 }
 
 void QQuickGridLayout::setRowSpacing(qreal spacing)
 {
     Q_D(QQuickGridLayout);
-    if (qIsNaN(spacing) || d->rowSpacing == spacing)
+    if (qIsNaN(spacing) || rowSpacing() == spacing)
         return;
 
-    d->rowSpacing = spacing;
     d->engine.setSpacing(spacing, Qt::Vertical);
     invalidate();
 }
@@ -798,9 +792,6 @@ QQuickLinearLayout::QQuickLinearLayout(Qt::Orientation orientation,
                                         QQuickItem *parent /*= 0*/)
     : QQuickGridLayoutBase(*new QQuickLinearLayoutPrivate, orientation, parent)
 {
-    Q_D(QQuickLinearLayout);
-    d->spacing = quickLayoutDefaultSpacing();
-    d->engine.setSpacing(d->spacing, Qt::Horizontal | Qt::Vertical);
 }
 
 /*!
@@ -843,29 +834,28 @@ QQuickLinearLayout::QQuickLinearLayout(Qt::Orientation orientation,
     \qmlproperty real RowLayout::spacing
 
     This property holds the spacing between each cell.
-    The default value is \c 4.
+    The default value is \c 5.
 */
 /*!
     \qmlproperty real ColumnLayout::spacing
 
     This property holds the spacing between each cell.
-    The default value is \c 4.
+    The default value is \c 5.
 */
 
 qreal QQuickLinearLayout::spacing() const
 {
     Q_D(const QQuickLinearLayout);
-    return d->spacing;
+    return d->engine.spacing(d->orientation, d->styleInfo);
 }
 
-void QQuickLinearLayout::setSpacing(qreal spacing)
+void QQuickLinearLayout::setSpacing(qreal space)
 {
     Q_D(QQuickLinearLayout);
-    if (qIsNaN(spacing) || d->spacing == spacing)
+    if (qIsNaN(space) || spacing() == space)
         return;
 
-    d->spacing = spacing;
-    d->engine.setSpacing(spacing, Qt::Horizontal | Qt::Vertical);
+    d->engine.setSpacing(space, Qt::Horizontal | Qt::Vertical);
     invalidate();
 }
 

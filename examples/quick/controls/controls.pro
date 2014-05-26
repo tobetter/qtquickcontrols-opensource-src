@@ -10,3 +10,7 @@ SUBDIRS += \
 qtHaveModule(widgets) {
     SUBDIRS += texteditor
 }
+
+qtHaveModule(sql) {
+    SUBDIRS += calendar
+}

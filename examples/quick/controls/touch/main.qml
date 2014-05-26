@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Controls 1.1
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 import "content"
 
 ApplicationWindow {
@@ -50,16 +50,6 @@ ApplicationWindow {
     Rectangle {
         color: "#212126"
         anchors.fill: parent
-    }
-
-    // Implements back key navigation
-    Keys.onReleased: {
-        if (event.key === Qt.Key_Back) {
-            if (stackView.depth > 1) {
-                stackView.pop();
-                event.accepted = true;
-            } else { Qt.quit(); }
-        }
     }
 
     toolBar: BorderImage {
@@ -133,6 +123,12 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
+        // Implements back key navigation
+        focus: true
+        Keys.onReleased: if (event.key === Qt.Key_Back && stackView.depth > 1) {
+                             stackView.pop();
+                             event.accepted = true;
+                         }
 
         initialItem: Item {
             width: parent.width

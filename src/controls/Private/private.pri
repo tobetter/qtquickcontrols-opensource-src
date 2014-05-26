@@ -1,8 +1,10 @@
 HEADERS += \
+    $$PWD/qquickcalendarmodel_p.h \
     $$PWD/qquicktooltip_p.h \
     $$PWD/qquickspinboxvalidator_p.h \
     $$PWD/qquickrangemodel_p.h \
     $$PWD/qquickrangemodel_p_p.h \
+    $$PWD/qquickrangeddate_p.h \
     $$PWD/qquickcontrolsettings_p.h \
     $$PWD/qquickwheelarea_p.h \
     $$PWD/qquickabstractstyle_p.h \
@@ -10,9 +12,11 @@ HEADERS += \
     $$PWD/qquickcontrolsprivate_p.h
 
 SOURCES += \
+    $$PWD/qquickcalendarmodel.cpp \
     $$PWD/qquicktooltip.cpp \
     $$PWD/qquickspinboxvalidator.cpp \
     $$PWD/qquickrangemodel.cpp \
+    $$PWD/qquickrangeddate.cpp \
     $$PWD/qquickcontrolsettings.cpp \
     $$PWD/qquickwheelarea.cpp \
     $$PWD/qquickabstractstyle.cpp
@@ -30,10 +34,13 @@ PRIVATE_QML_FILES += \
     $$PWD/TabBar.qml \
     $$PWD/BasicButton.qml \
     $$PWD/Control.qml \
+    $$PWD/CalendarHeaderModel.qml \
+    $$PWD/CalendarUtils.js \
     $$PWD/FastGlow.qml \
     $$PWD/SourceProxy.qml\
     $$PWD/Style.qml \
     $$PWD/style.js \
+    $$PWD/MenuItemSubControls.qml \
     $$PWD/ModalPopupBehavior.qml \
     $$PWD/StackViewSlideDelegate.qml \
     $$PWD/StackView.js \
@@ -45,6 +52,8 @@ PRIVATE_QML_FILES += \
     $$PWD/ColumnMenuContent.qml \
     $$PWD/MenuContentItem.qml \
     $$PWD/MenuContentScroller.qml \
+    $$PWD/ContentItem.qml \
+    $$PWD/HoverButton.qml \
     $$PWD/qmldir
 
 QML_FILES += $$PRIVATE_QML_FILES

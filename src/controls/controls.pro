@@ -1,8 +1,8 @@
 TARGET  = qtquickcontrolsplugin
 TARGETPATH = QtQuick/Controls
-IMPORT_VERSION = 1.1
+IMPORT_VERSION = 1.2
 
-QT += qml quick gui-private core-private
+QT += qml quick quick-private gui-private core-private
 
 QMAKE_DOCS = $$PWD/doc/qtquickcontrols.qdocconf
 
@@ -10,6 +10,7 @@ CONTROLS_QML_FILES = \
     ApplicationWindow.qml \
     Button.qml \
     BusyIndicator.qml \
+    Calendar.qml \
     CheckBox.qml \
     ComboBox.qml \
     GroupBox.qml \

@@ -42,8 +42,8 @@
 
 
 
-import QtQuick 2.1
-import QtQuick.Controls 1.1
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
 
 ApplicationWindow {
@@ -148,6 +148,15 @@ ApplicationWindow {
                         ListElement { text: "Align Top"; value: Qt.AlignTop }
                         ListElement { text: "Align Bottom"; value: Qt.AlignBottom }
                         ListElement { text: "Align VCenter"; value: Qt.AlignVCenter }
+                    }
+                    Component.onCompleted: {
+                        for (var i = 0; i < cbItems.count; ++i) {
+                            var v = cbItems.get(i).value;
+                            if (v == defaultAlignment) {
+                                currentIndex = i;
+                                break;
+                            }
+                        }
                     }
                     onCurrentIndexChanged: {
                         // assumes mainLayout/GroupBox/Layout/<child_items> hierarchy

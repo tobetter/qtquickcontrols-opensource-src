@@ -56,7 +56,8 @@ class QQuickControlSettings : public QObject
     Q_PROPERTY(QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged)
     Q_PROPERTY(QString stylePath READ stylePath WRITE setStylePath NOTIFY stylePathChanged)
     Q_PROPERTY(qreal dpiScaleFactor READ dpiScaleFactor CONSTANT)
-    Q_PROPERTY(qreal hasTouchScreen READ hasTouchScreen CONSTANT)
+    Q_PROPERTY(qreal dragThreshold READ dragThreshold CONSTANT)
+    Q_PROPERTY(bool hasTouchScreen READ hasTouchScreen CONSTANT)
 
 public:
     QQuickControlSettings(QQmlEngine *engine);
@@ -70,6 +71,7 @@ public:
     void setStylePath(const QString &path);
 
     qreal dpiScaleFactor() const;
+    qreal dragThreshold() const;
 
     bool hasTouchScreen() const;
 

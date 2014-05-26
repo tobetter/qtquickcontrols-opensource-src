@@ -44,6 +44,7 @@
 #include <qguiapplication.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <QtQuick/qquickitem.h>
+#include <QtQuick/private/qquickrendercontrol_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,6 +55,14 @@ QQuickPopupWindow::QQuickPopupWindow() :
 {
     setFlags(Qt::Popup);
     setModality(Qt::ApplicationModal);
+    connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)),
+            this, SLOT(applicationStateChanged(Qt::ApplicationState)));
+}
+
+void QQuickPopupWindow::applicationStateChanged(Qt::ApplicationState state)
+{
+    if (state != Qt::ApplicationActive)
+        dismissPopup();
 }
 
 void QQuickPopupWindow::show()
@@ -77,6 +86,19 @@ void QQuickPopupWindow::show()
             posx += parentWindow->geometry().left();
             posy += parentWindow->geometry().top();
         }
+    } else if (m_parentItem && m_parentItem->window()) {
+        QPoint offset;
+        QQuickWindow *quickWindow = m_parentItem->window();
+        QWindow *renderWindow = QQuickRenderControl::renderWindowFor(quickWindow, &offset);
+
+        QPointF pos = m_parentItem->mapToItem(quickWindow->contentItem(), QPointF(posx, posy));
+        posx = pos.x();
+        posy = pos.y();
+        if (renderWindow) {
+            QPoint parentWindowOffset = renderWindow->mapToGlobal(QPoint());
+            posx += offset.x() + parentWindowOffset.x();
+            posy += offset.y() + parentWindowOffset.y();
+        }
     }
 
     if (m_contentItem) {
@@ -86,12 +108,17 @@ void QQuickPopupWindow::show()
     } else {
         setPosition(posx, posy);
     }
+    emit geometryChanged();
 
-    if (!qobject_cast<QQuickPopupWindow *>(transientParent())) // No need for parent menu windows
-        if (QQuickWindow *w = qobject_cast<QQuickWindow *>(transientParent()))
+    if (!qobject_cast<QQuickPopupWindow *>(transientParent())) { // No need for parent menu windows
+        if (QQuickWindow *w = qobject_cast<QQuickWindow *>(transientParent())) {
             if (QQuickItem *mg = w->mouseGrabberItem())
                 mg->ungrabMouse();
-
+        } else if (m_parentItem && m_parentItem->window()) {
+            if (QQuickItem *mg = m_parentItem->window()->mouseGrabberItem())
+                mg->ungrabMouse();
+        }
+    }
     QQuickWindow::show();
     setMouseGrabEnabled(true); // Needs to be done after calling show()
     setKeyboardGrabEnabled(true);
@@ -119,6 +146,7 @@ void QQuickPopupWindow::updateSize()
 {
     QSize contentSize = popupContentItem()->childrenRect().size().toSize();
     setGeometry(x(), y(), contentSize.width(), contentSize.height());
+    emit geometryChanged();
 }
 
 void QQuickPopupWindow::dismissPopup()

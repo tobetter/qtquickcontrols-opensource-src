@@ -51,6 +51,7 @@
 #include <qquickwindow.h>
 #include "private/qguiapplication_p.h"
 #include <QtGui/qpa/qplatformtheme.h>
+#include "../qquickmenuitem_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -103,6 +104,8 @@ public:
     {
         m_geometry.setDrawingMode(GL_TRIANGLE_STRIP);
         setGeometry(&m_geometry);
+        // The texture material has mipmap filtering set to Nearest by default. This is not ideal.
+        m_material.setMipmapFiltering(QSGTexture::None);
         setMaterial(&m_material);
     }
 
@@ -263,6 +266,8 @@ void QQuickStyleItem::initStyleOption()
                                         (sizeHint == "small") ? QPlatformTheme::SmallFont :
                                         QPlatformTheme::SystemFont;
 
+    bool needsResolvePalette = true;
+
     switch (m_itemType) {
     case Button: {
         if (!m_styleoption)
@@ -329,6 +334,8 @@ void QQuickStyleItem::initStyleOption()
         opt->features = QStyleOptionViewItem::HasDisplay;
         opt->text = text();
         opt->textElideMode = Qt::ElideRight;
+        resolvePalette();
+        needsResolvePalette = false;
         QPalette pal = m_styleoption->palette;
         pal.setBrush(QPalette::Base, Qt::NoBrush);
         m_styleoption->palette = pal;
@@ -344,6 +351,7 @@ void QQuickStyleItem::initStyleOption()
 
         QStyleOptionHeader *opt = qstyleoption_cast<QStyleOptionHeader*>(m_styleoption);
         opt->text = text();
+        opt->textAlignment = static_cast<Qt::AlignmentFlag>(m_properties.value("textalignment").toInt());
         opt->sortIndicator = activeControl() == "down" ?
                     QStyleOptionHeader::SortDown
                   : activeControl() == "up" ?
@@ -503,19 +511,23 @@ void QQuickStyleItem::initStyleOption()
         // For GTK style. See below, in setElementType()
         setProperty("_q_isComboBoxPopupItem", m_itemType == ComboBoxItem);
 
-        QString scrollerDirection = m_properties["scrollerDirection"].toString();
-        if (!scrollerDirection.isEmpty()) {
+        QQuickMenuItemType::MenuItemType type =
+                static_cast<QQuickMenuItemType::MenuItemType>(m_properties["type"].toInt());
+        if (type == QQuickMenuItemType::ScrollIndicator) {
+            int scrollerDirection = m_properties["scrollerDirection"].toInt();
             opt->menuItemType = QStyleOptionMenuItem::Scroller;
-            opt->state |= scrollerDirection == "up" ?
+            opt->state |= scrollerDirection == Qt::UpArrow ?
                         QStyle::State_UpArrow : QStyle::State_DownArrow;
-        } else if (text().isEmpty()) {
+        } else if (type == QQuickMenuItemType::Separator) {
             opt->menuItemType = QStyleOptionMenuItem::Separator;
         } else {
             opt->text = text();
 
-            if (m_properties["isSubmenu"].toBool()) {
+            if (type == QQuickMenuItemType::Menu) {
                 opt->menuItemType = QStyleOptionMenuItem::SubMenu;
             } else {
+                opt->menuItemType = QStyleOptionMenuItem::Normal;
+
                 QString shortcut = m_properties["shortcut"].toString();
                 if (!shortcut.isEmpty()) {
                     opt->text += QLatin1Char('\t') + shortcut;
@@ -527,8 +539,6 @@ void QQuickStyleItem::initStyleOption()
                     QVariant exclusive = m_properties["exclusive"];
                     opt->checkType = exclusive.toBool() ? QStyleOptionMenuItem::Exclusive :
                                                           QStyleOptionMenuItem::NonExclusive;
-                } else {
-                    opt->menuItemType = QStyleOptionMenuItem::Normal;
                 }
             }
             if (m_properties["icon"].canConvert<QIcon>())
@@ -601,6 +611,7 @@ void QQuickStyleItem::initStyleOption()
 
         QStyleOptionSpinBox *opt = qstyleoption_cast<QStyleOptionSpinBox*>(m_styleoption);
         opt->frame = true;
+        opt->subControls = QStyle::SC_SpinBoxFrame | QStyle::SC_SpinBoxEditField;
         if (value() & 0x1)
             opt->activeSubControls = QStyle::SC_SpinBoxUp;
         else if (value() & (1<<1))
@@ -710,6 +721,9 @@ void QQuickStyleItem::initStyleOption()
     if (!m_styleoption)
         m_styleoption = new QStyleOption();
 
+    if (needsResolvePalette)
+        resolvePalette();
+
     m_styleoption->styleObject = this;
     m_styleoption->direction = qApp->layoutDirection();
 
@@ -749,6 +763,62 @@ void QQuickStyleItem::initStyleOption()
         m_styleoption->state |= QStyle::State_Small;
     }
 
+}
+
+void QQuickStyleItem::resolvePalette()
+{
+    QPlatformTheme::Palette paletteType = QPlatformTheme::SystemPalette;
+    switch (m_itemType) {
+    case Button:
+        paletteType = QPlatformTheme::ButtonPalette;
+        break;
+    case RadioButton:
+        paletteType = QPlatformTheme::RadioButtonPalette;
+        break;
+    case CheckBox:
+        paletteType = QPlatformTheme::CheckBoxPalette;
+        break;
+    case ComboBox:
+    case ComboBoxItem:
+        paletteType = QPlatformTheme::ComboBoxPalette;
+        break;
+    case ToolBar:
+    case ToolButton:
+        paletteType = QPlatformTheme::ToolButtonPalette;
+        break;
+    case Tab:
+    case TabFrame:
+        paletteType = QPlatformTheme::TabBarPalette;
+        break;
+    case Edit:
+        paletteType = QPlatformTheme::TextEditPalette;
+        break;
+    case GroupBox:
+        paletteType = QPlatformTheme::GroupBoxPalette;
+        break;
+    case Header:
+        paletteType = QPlatformTheme::HeaderPalette;
+        break;
+    case Item:
+    case ItemRow:
+        paletteType = QPlatformTheme::ItemViewPalette;
+        break;
+    case Menu:
+    case MenuItem:
+        paletteType = QPlatformTheme::MenuPalette;
+        break;
+    case MenuBar:
+    case MenuBarItem:
+        paletteType = QPlatformTheme::MenuBarPalette;
+        break;
+    default:
+        break;
+    }
+
+    const QPalette *platformPalette = QGuiApplicationPrivate::platformTheme()->palette(paletteType);
+    if (platformPalette)
+        m_styleoption->palette = *platformPalette;
+    // Defaults to SystemPalette otherwise
 }
 
 /*
@@ -866,8 +936,16 @@ QSize QQuickStyleItem::sizeFromContents(int width, int height)
         break;
     case Button: {
         QStyleOptionButton *btn = qstyleoption_cast<QStyleOptionButton*>(m_styleoption);
-        int newWidth = qMax(width, btn->fontMetrics.width(btn->text));
-        int newHeight = qMax(height, btn->fontMetrics.height());
+
+        int contentWidth = btn->fontMetrics.width(btn->text);
+        int contentHeight = btn->fontMetrics.height();
+        if (!btn->icon.isNull()) {
+            //+4 matches a hardcoded value in QStyle and acts as a margin between the icon and the text.
+            contentWidth += btn->iconSize.width() + 4;
+            contentHeight = qMax(btn->fontMetrics.height(), btn->iconSize.height());
+        }
+        int newWidth = qMax(width, contentWidth);
+        int newHeight = qMax(height, contentHeight);
         size = qApp->style()->sizeFromContents(QStyle::CT_PushButton, m_styleoption, QSize(newWidth, newHeight)); }
 #ifdef Q_OS_OSX
         if (style() == "mac") {
@@ -919,6 +997,9 @@ QSize QQuickStyleItem::sizeFromContents(int width, int height)
             frame.rect = m_styleoption->rect;
             frame.styleObject = this;
             size = qApp->style()->sizeFromContents(QStyle::CT_LineEdit, &frame, QSize(width, height));
+            if (m_itemType == SpinBox)
+                size.setWidth(qApp->style()->sizeFromContents(QStyle::CT_SpinBox,
+                                                              m_styleoption, QSize(width + 2, height)).width());
         }
         break;
     case GroupBox: {
@@ -971,6 +1052,7 @@ QSize QQuickStyleItem::sizeFromContents(int width, int height)
 qreal QQuickStyleItem::baselineOffset()
 {
     QRect r;
+    bool ceilResult = true; // By default baseline offset rounding is done upwards
     switch (m_itemType) {
     case RadioButton:
         r = qApp->style()->subElementRect(QStyle::SE_RadioButtonContents, m_styleoption);
@@ -992,16 +1074,20 @@ qreal QQuickStyleItem::baselineOffset()
         }
         break;
     case SpinBox:
-        if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(m_styleoption))
+        if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(m_styleoption)) {
             r = qApp->style()->subControlRect(QStyle::CC_SpinBox, spinbox, QStyle::SC_SpinBoxEditField);
+            ceilResult = false;
+        }
         break;
     default:
         break;
     }
-    if (r.isValid()) {
+    if (r.height() > 0) {
         const QFontMetrics &fm = m_styleoption->fontMetrics;
-        const float surplus = r.height() - fm.height();
-        float result = float(r.top()) + surplus/2.0 + fm.ascent();
+        int surplus = r.height() - fm.height();
+        if ((surplus & 1) && ceilResult)
+            surplus++;
+        int result = r.top() + surplus/2 + fm.ascent();
 #ifdef Q_OS_OSX
         if (style() == QStringLiteral("mac")) {
             switch (m_itemType) {
@@ -1066,7 +1152,7 @@ int QQuickStyleItem::pixelMetric(const QString &metric)
     if (metric == "scrollbarExtent")
         return qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent, 0 );
     else if (metric == "defaultframewidth")
-        return qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, 0);
+        return qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, m_styleoption);
     else if (metric == "taboverlap")
         return qApp->style()->pixelMetric(QStyle::PM_TabBarTabOverlap, 0 );
     else if (metric == "tabbaseoverlap")
@@ -1112,11 +1198,9 @@ QVariant QQuickStyleItem::styleHint(const QString &metric)
     if (metric == "comboboxpopup") {
         return qApp->style()->styleHint(QStyle::SH_ComboBox_Popup, m_styleoption);
     } else if (metric == "highlightedTextColor") {
-        QPalette pal = QApplication::palette("QAbstractItemView");
-        pal.setCurrentColorGroup(m_styleoption->palette.currentColorGroup());
-        return pal.highlightedText().color().name();
+        return m_styleoption->palette.highlightedText().color().name();
     } else if (metric == "textColor") {
-        QPalette pal = qApp->palette();
+        QPalette pal = m_styleoption->palette;
         pal.setCurrentColorGroup(active()? QPalette::Active : QPalette::Inactive);
         return pal.text().color().name();
     } else if (metric == "focuswidget") {
@@ -1132,9 +1216,11 @@ QVariant QQuickStyleItem::styleHint(const QString &metric)
         return qApp->style()->styleHint(QStyle::SH_ScrollBar_LeftClickAbsolutePosition);
     else if (metric == "activateItemOnSingleClick")
         return qApp->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick);
+    else if (metric == "submenupopupdelay")
+        return qApp->style()->styleHint(QStyle::SH_Menu_SubMenuPopupDelay, m_styleoption);
     return 0;
 
-    // Add SH_Menu_SpaceActivatesItem, SH_Menu_SubMenuPopupDelay
+    // Add SH_Menu_SpaceActivatesItem
 }
 
 void QQuickStyleItem::setHints(const QVariantMap &str)
@@ -1521,6 +1607,15 @@ void QQuickStyleItem::paint(QPainter *painter)
         painter->setPen(pen);
     }    break;
     case SpinBox:
+#ifdef Q_OS_MAC
+        // macstyle depends on the embedded qlineedit to fill the editfield background
+        if (style() == "mac") {
+            QRect editRect = qApp->style()->subControlRect(QStyle::CC_SpinBox,
+                                                           qstyleoption_cast<QStyleOptionComplex*>(m_styleoption),
+                                                           QStyle::SC_SpinBoxEditField);
+            painter->fillRect(editRect.adjusted(-1, -1, 1, 1), m_styleoption->palette.base());
+        }
+#endif
         qApp->style()->drawComplexControl(QStyle::CC_SpinBox,
                                           qstyleoption_cast<QStyleOptionComplex*>(m_styleoption),
                                           painter);
@@ -1584,6 +1679,7 @@ void QQuickStyleItem::paint(QPainter *painter)
             frame.midLineWidth = 0;
             frame.rect = m_styleoption->rect;
             frame.styleObject = this;
+            frame.palette = m_styleoption->palette;
             qApp->style()->drawPrimitive(QStyle::PE_FrameMenu, &frame, painter);
         }
     }
