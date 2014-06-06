@@ -1,3 +1,12 @@
+qtquickcontrols-opensource-src (5.3.0-1ubuntu1) utopic; urgency=medium
+
+  * New upstream release.
+  * Sync with Debian, remaining changes:
+    - Keep transitional packages
+    - Additional dependencies for the -examples package
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 06 Jun 2014 08:55:29 +0000
+
 qtquickcontrols-opensource-src (5.3.0-1) experimental; urgency=medium
 
   [ Dmitry Shachnev ]
