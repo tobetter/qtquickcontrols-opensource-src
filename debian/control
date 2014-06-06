@@ -1,7 +1,8 @@
 Source: qtquickcontrols-opensource-src
 Section: libs
 Priority: optional
-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
 Uploaders: Fathi Boudra <fabo@debian.org>,
            Modestas Vainius <modax@debian.org>,
            Sune Vuorela <debian@pusling.com>,
@@ -53,6 +54,17 @@ Description: Qt 5 Quick Controls QML module
  The Qt Quick Controls module provides a set of controls that can be used to
  build complete interfaces in Qt Quick.
 
+Package: qtdeclarative5-dialogs-plugin
+Architecture: any
+Multi-Arch: same
+Section: oldlibs
+Depends: qml-module-qtquick-dialogs, ${misc:Depends}
+Description: transitional dummy package for Qt 5 Dialogs QML module
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ This is a transitional dummy package which can be safely removed.
+
 Package: qml-module-qtquick-dialogs
 Architecture: any
 Multi-Arch: same
@@ -91,6 +103,17 @@ Description: Qt 5 Quick Layouts QML module
  The Qt Quick Layouts modules provides a set of layouts that can be used to
  build complete interfaces in Qt Quick.
 
+Package: qtdeclarative5-privatewidgets-plugin
+Architecture: any
+Multi-Arch: same
+Section: oldlibs
+Depends: qml-module-qtquick-privatewidgets, ${misc:Depends}
+Description: transitional dummy package for Qt 5 Private Widgets QML module
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ This is a transitional dummy package which can be safely removed.
+
 Package: qml-module-qtquick-privatewidgets
 Architecture: any
 Multi-Arch: same
@@ -111,6 +134,9 @@ Section: x11
 Pre-Depends: ${misc:Pre-Depends}
 Depends: qml-module-qtquick-controls,
          qml-module-qtquick-dialogs,
+         qml-module-qtquick-privatewidgets,
+         qml-module-qtquick-layouts,
+         qml-module-qttest,
          ${misc:Depends},
          ${shlibs:Depends}
 Breaks: qtdeclarative5-examples (<< 5.3.0~)
