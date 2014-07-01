@@ -1,3 +1,11 @@
+qtquickcontrols-opensource-src (5.3.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop QML modules transitional packages, they are not needed anymore.
+  * Bump Qt build dependencies.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Tue, 01 Jul 2014 12:32:22 -0300
+
 qtquickcontrols-opensource-src (5.3.0-2) unstable; urgency=medium
 
   * Upload to unstable.
