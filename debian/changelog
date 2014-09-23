@@ -1,3 +1,9 @@
+qtquickcontrols-opensource-src (5.3.2-2) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Mon, 22 Sep 2014 23:44:30 -0300
+
 qtquickcontrols-opensource-src (5.3.2-1) experimental; urgency=medium
 
   * New upstream release.
