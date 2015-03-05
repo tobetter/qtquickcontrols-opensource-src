@@ -1,3 +1,13 @@
+qtquickcontrols-opensource-src (5.4.1-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Update debian/watch to use https://download.qt.io/.
+  * Bump Qt build-dependencies to 5.4.1.
+  * Add some additional dependencies to qtquickcontrols5-examples.
+  * Clean up debian/copyright.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 05 Mar 2015 11:31:56 +0300
+
 qtquickcontrols-opensource-src (5.4.0-1) experimental; urgency=medium
 
   * New upstream release.
