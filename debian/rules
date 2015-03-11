@@ -6,6 +6,7 @@
 export CFLAGS := $(shell dpkg-buildflags --get CFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
 export CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
 export LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
+export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 export QT_SELECT := qt5
 
 %:
@@ -22,7 +23,18 @@ override_dh_auto_build-indep:
 	dh_auto_build -Smakefile -- docs
 
 override_dh_auto_install-indep:
-	make INSTALL_ROOT=$(CURDIR)/debian/tmp install_docs
+	$(MAKE) INSTALL_ROOT=$(CURDIR)/debian/tmp install_docs
 
 override_dh_install:
 	dh_install --fail-missing
+
+binary-arch:
+	# run after dh_install so that the final tree is in place
+	dh binary-arch --until dh_install
+	(cd $(CURDIR)/tests; qmake)
+	$(MAKE) -C $(CURDIR)/tests
+	QML2_IMPORT_PATH=$(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/qt5/qml \
+		xvfb-run -a --server-args="-screen 0 1280x960x24" \
+			$(MAKE) -C $(CURDIR)/tests/auto/controls check
+	dh binary-arch --remaining
+
