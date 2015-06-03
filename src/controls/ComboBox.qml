@@ -349,7 +349,7 @@ Control {
         property bool overridePressed: false
         readonly property bool effectivePressed: (pressed || overridePressed) && containsMouse
         anchors.fill: parent
-        hoverEnabled: true
+        hoverEnabled: Settings.hoverEnabled
         onPressed: {
             if (comboBox.activeFocusOnPress)
                 forceActiveFocus()
@@ -628,6 +628,7 @@ Control {
         function toggleShow() {
             if (popup.__popupVisible) {
                 popup.__dismissMenu()
+                popup.__destroyAllMenuPopups()
             } else {
                 if (items[__selectedIndex])
                     items[__selectedIndex].checked = true
@@ -653,7 +654,10 @@ Control {
     // The key bindings below will only be in use when popup is
     // not visible. Otherwise, native popup key handling will take place:
     Keys.onSpacePressed: {
-        popup.toggleShow()
+        if (!editable)
+            popup.toggleShow()
+        else
+            event.accepted = false
     }
 
     Keys.onUpPressed: __selectPrevItem()

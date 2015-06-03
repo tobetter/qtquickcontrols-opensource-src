@@ -48,8 +48,8 @@ import QtQuick.Controls.Private 1.0
     \inqmlmodule QtQuick.Controls
     \since 5.1
     \ingroup menus
-    \brief Provides a menu component for use in menu bars, as context menu,
-    and other popup menus.
+    \brief Provides a menu component for use as a context menu, popup menu, or
+    as part of a menu bar.
 
     \image menu.png
 
@@ -148,13 +148,24 @@ MenuPrivate {
     property int __currentIndex: -1
     /*! \internal */
     on__MenuClosed: __currentIndex = -1
+    on__MenuPopupDestroyed: contentLoader.active = false
+    onPopupVisibleChanged: {
+        if (__popupVisible)
+            contentLoader.active = true
+    }
 
     /*! \internal */
     __contentItem: Loader {
-        sourceComponent: MenuContentItem {
-           __menu: root
+        id: contentLoader
+        Component {
+            id: menuContent
+            MenuContentItem {
+                __menu: root
+            }
         }
-        active: !root.__isNative && root.__popupVisible
+
+        sourceComponent: root.__isNative ? null : menuContent
+        active: false
         focus: true
         Keys.forwardTo: item ? [item, root.__parentContentItem] : []
         property bool altPressed: root.__parentContentItem ? root.__parentContentItem.altPressed : false

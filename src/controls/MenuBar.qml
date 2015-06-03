@@ -189,7 +189,7 @@ MenuBarPrivate {
         Keys.onLeftPressed: {
             if (d.openedMenuIndex > 0) {
                 var idx = d.openedMenuIndex - 1
-                while (idx >= 0 && !root.menus[idx].enabled)
+                while (idx >= 0 && !(root.menus[idx].enabled && root.menus[idx].visible))
                     idx--
                 if (idx >= 0) {
                     d.preselectMenuItem = true
@@ -203,7 +203,7 @@ MenuBarPrivate {
         Keys.onRightPressed: {
             if (d.openedMenuIndex !== -1 && d.openedMenuIndex < root.menus.length - 1) {
                 var idx = d.openedMenuIndex + 1
-                while (idx < root.menus.length && !root.menus[idx].enabled)
+                while (idx < root.menus.length && !(root.menus[idx].enabled && root.menus[idx].visible))
                     idx++
                 if (idx < root.menus.length) {
                     d.preselectMenuItem = true
@@ -256,8 +256,9 @@ MenuBarPrivate {
                                                    menuBarLoader.height - d.heightPadding, 0, 0), 0)
                                 if (d.preselectMenuItem)
                                     __menuItem.__currentIndex = 0
-                            } else {
-                                __menuItem.__closeMenu()
+                            } else if (__menuItem.__popupVisible) {
+                                __menuItem.__dismissMenu()
+                                __menuItem.__destroyAllMenuPopups()
                             }
                         }
                     }
@@ -290,7 +291,7 @@ MenuBarPrivate {
         MouseArea {
             id: menuMouseArea
             anchors.fill: parent
-            hoverEnabled: true
+            hoverEnabled: Settings.hoverEnabled
 
             onPositionChanged: updateCurrentItem(mouse, false)
             onPressed: {
