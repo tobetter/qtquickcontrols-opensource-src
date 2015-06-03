@@ -1,3 +1,14 @@
+qtquickcontrols-opensource-src (5.4.2-1) experimental; urgency=medium
+
+  * New upstream release.
+    - Bump Qt build dependencies.
+  * Clear up the list in Uploaders removing people who hasn't committed to the
+    repo in more than a year. They can re add themselves whenever they want
+    (and we really hope to see you back really soon!).
+  * Expose HTML documentation (Closes: #751180).
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Wed, 03 Jun 2015 16:27:43 -0300
+
 qtquickcontrols-opensource-src (5.4.1-1) experimental; urgency=medium
 
   * New upstream release.

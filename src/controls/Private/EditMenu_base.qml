@@ -48,7 +48,7 @@ Item {
     Component {
         id: cutAction
         Action {
-            text: "Cu&t"
+            text: qsTr("Cu&t")
             shortcut: StandardKey.Cut
             iconName: "edit-cut"
             enabled: !input.readOnly && selectionStart !== selectionEnd
@@ -62,7 +62,7 @@ Item {
     Component {
         id: copyAction
         Action {
-            text: "&Copy"
+            text: qsTr("&Copy")
             shortcut: StandardKey.Copy
             iconName: "edit-copy"
             enabled: input.selectionStart !== input.selectionEnd
@@ -76,7 +76,7 @@ Item {
     Component {
         id: pasteAction
         Action {
-            text: "&Paste"
+            text: qsTr("&Paste")
             shortcut: StandardKey.Paste
             iconName: "edit-paste"
             enabled: input.canPaste
@@ -102,9 +102,11 @@ Item {
             input.activate()
 
             if (control.menu) {
-                getMenuInstance().__dismissMenu();
+                var menu = getMenuInstance();
+                menu.__dismissMenu();
+                menu.__destroyAllMenuPopups();
                 var menuPos = mapToItem(null, mouse.x, mouse.y)
-                getMenuInstance().__popup(Qt.rect(menuPos.x, menuPos.y, 0, 0), -1, MenuPrivate.EditMenu);
+                menu.__popup(Qt.rect(menuPos.x, menuPos.y, 0, 0), -1, MenuPrivate.EditMenu);
             }
         }
     }
