@@ -1,3 +1,9 @@
+qtquickcontrols-opensource-src (5.4.2-1ubuntu2) wily; urgency=medium
+
+  * Rebuild for GCC5 transition.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Tue, 14 Jul 2015 09:38:42 +0300
+
 qtquickcontrols-opensource-src (5.4.2-1ubuntu1) wily; urgency=medium
 
   * New upstream release.
