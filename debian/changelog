@@ -1,3 +1,15 @@
+qtquickcontrols-opensource-src (5.5.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Bump Qt build-dependencies to 5.5.0.
+  * Add new qml-module-qtquick-extras binary package.
+  * Do not hardcode libqt5qml5 dependencies.
+  * Update debian/copyright.
+  * Avoid compiling code during arch-indep builds, by adding empty
+    override_dh_auto_test-indep target.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 29 Aug 2015 20:51:41 +0300
+
 qtquickcontrols-opensource-src (5.4.2-2) unstable; urgency=medium
 
   * Upload to unstable.
