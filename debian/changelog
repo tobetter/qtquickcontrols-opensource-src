@@ -1,3 +1,14 @@
+qtquickcontrols-opensource-src (5.5.1-1) experimental; urgency=medium
+
+  [ Dmitry Shachnev ]
+  * Minor debian/copyright fixes.
+
+  [ Timo Jyrinki ]
+  * New upstream release. 
+  * Bump build dependencies.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 19 Oct 2015 10:42:58 +0000
+
 qtquickcontrols-opensource-src (5.5.0-1) experimental; urgency=medium
 
   * New upstream release.
