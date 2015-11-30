@@ -1,3 +1,11 @@
+qtquickcontrols-opensource-src (5.5.1-1ubuntu1) xenial; urgency=medium
+
+  * New upstream release.
+  * Merge with Debian, remaining changes:
+    - A transitional package until Ubuntu 16.04 LTS.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 30 Nov 2015 12:23:54 +0000
+
 qtquickcontrols-opensource-src (5.5.1-1) experimental; urgency=medium
 
   [ Dmitry Shachnev ]
@@ -27,6 +35,13 @@ qtquickcontrols-opensource-src (5.4.2-2) unstable; urgency=medium
 
  -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Wed, 24 Jun 2015 16:20:42 -0300
 
+
+qtquickcontrols-opensource-src (5.4.2-1ubuntu1) wily; urgency=medium
+
+  * New upstream release.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Thu, 11 Jun 2015 13:49:21 +0000
+
 qtquickcontrols-opensource-src (5.4.2-1) experimental; urgency=medium
 
   * New upstream release.
@@ -38,6 +53,16 @@ qtquickcontrols-opensource-src (5.4.2-1) experimental; urgency=medium
 
  -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Wed, 03 Jun 2015 16:27:43 -0300
 
+qtquickcontrols-opensource-src (5.4.1-0ubuntu1) vivid; urgency=medium
+
+  * New upstream release.
+  * Sync with Debian, remaining changes:
+    - Keep transitional packages until Ubuntu 16.04 LTS
+    - Additional dependencies for the -examples package
+    - Tests enabled
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 11 Mar 2015 11:42:55 +0000
+
 qtquickcontrols-opensource-src (5.4.1-1) experimental; urgency=medium
 
   * New upstream release.
@@ -47,6 +72,24 @@ qtquickcontrols-opensource-src (5.4.1-1) experimental; urgency=medium
   * Clean up debian/copyright.
 
  -- Dmitry Shachnev <mitya57@debian.org>  Thu, 05 Mar 2015 11:31:56 +0300
+
+qtquickcontrols-opensource-src (5.4.0-1ubuntu2) vivid; urgency=medium
+
+  * debian/rules: Build & run the upstream testsuite. We need to do this
+    manually since the upstream build system isn't set up to run these
+    currently.
+
+ -- Iain Lane <iain@orangesquash.org.uk>  Tue, 10 Mar 2015 18:09:41 +0000
+
+qtquickcontrols-opensource-src (5.4.0-1ubuntu1) vivid; urgency=medium
+
+  * New upstream release.
+  * Bump build dependencies.
+  * Sync with Debian, remaining changes:
+    - Keep transitional packages until Ubuntu 16.04 LTS
+    - Additional dependencies for the -examples package
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 13 Feb 2015 06:40:28 +0000
 
 qtquickcontrols-opensource-src (5.4.0-1) experimental; urgency=medium
 
@@ -58,6 +101,15 @@ qtquickcontrols-opensource-src (5.4.0-1) experimental; urgency=medium
   * Bump Standards-Version to 3.9.6, no changes needed.
 
  -- Dmitry Shachnev <mitya57@debian.org>  Mon, 22 Dec 2014 15:21:14 +0300
+
+qtquickcontrols-opensource-src (5.3.2-2ubuntu1) vivid; urgency=medium
+
+  * New upstream release
+  * Sync with Debian, remaining changes:
+    - Keep transitional packages
+    - Additional dependencies for the -examples package
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Tue, 28 Oct 2014 07:04:45 +0000
 
 qtquickcontrols-opensource-src (5.3.2-2) unstable; urgency=medium
 
@@ -85,6 +137,15 @@ qtquickcontrols-opensource-src (5.3.0-2) unstable; urgency=medium
   * Upload to unstable.
 
  -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Fri, 06 Jun 2014 15:34:02 -0300
+
+qtquickcontrols-opensource-src (5.3.0-1ubuntu1) utopic; urgency=medium
+
+  * New upstream release.
+  * Sync with Debian, remaining changes:
+    - Keep transitional packages
+    - Additional dependencies for the -examples package
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Fri, 06 Jun 2014 08:55:29 +0000
 
 qtquickcontrols-opensource-src (5.3.0-1) experimental; urgency=medium
 
