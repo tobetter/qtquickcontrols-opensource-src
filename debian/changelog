@@ -1,3 +1,13 @@
+qtquickcontrols-opensource-src (5.6.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Bump Qt build-dependencies to 5.6.0.
+  * Drop unused pkg-kde-tools build-dependency.
+  * Use recommended https URIs for Vcs fields.
+  * Bump Standards-Version to 3.9.7, no changes needed.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 31 Mar 2016 20:46:08 +0200
+
 qtquickcontrols-opensource-src (5.5.1-2) unstable; urgency=medium
 
   * Upload to unstable.
