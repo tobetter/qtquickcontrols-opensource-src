@@ -3,7 +3,7 @@ Upstream-Name: qtquickcontrols-opensource-src
 Source: https://download.qt.io/official_releases/qt/*/submodules/
 
 Files: *
-Copyright: 2015 The Qt Company Ltd.
+Copyright: 2016 The Qt Company Ltd.
 License: LGPL-3 or GPL-2
 
 Files: debian/*
@@ -13,28 +13,26 @@ Copyright: 2007-2012 Fathi Boudra <fabo@debian.org>
            2007-2009 Ana Beatriz Guerrero Lopez <ana@debian.org>
            2005-2007 Brian Nelson <pyro@debian.org>
            2012-2013 Timo Jyrinki <timo.jyrinki@canonical.com>
-           2013-2014 Dmitry Shachnev <mitya57@debian.org>
            2013-2014 Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>
-License: LGPL-2.1
+           2013-2016 Dmitry Shachnev <mitya57@debian.org>
+License: LGPL-3 or GPL-2
+
+Files: tests/*
+Copyright: 2016 The Qt Company Ltd.
+License: GPL-3 with Qt-1.0 exception
 
 Files: examples/*
        tests/*.qml
        tests/auto/extras/data/TestUtils.js
-Copyright: 2015 The Qt Company Ltd.
+Copyright: 2015-2016 The Qt Company Ltd.
 License: BSD-3-clause
 
 Files: *.qdoc
        src/controls/doc/snippets/*.qml
-       src/layouts/doc/src/snippets/*.qml
-Copyright: 2015 The Qt Company Ltd.
+Copyright: 2016 The Qt Company Ltd.
 License: GFDL-NIV-1.3
 
-Files: tests/auto/menubar/*
-Copyright: 2015 The Qt Company Ltd.
-           2015 Cucchetto Filippo <filippocucchetto@gmail.com>
-License: LGPL-3 or GPL-2
-
-Files: examples/quick/extras/dashboard/fonts/DejaVuSans.ttf
+Files: examples/quickcontrols/extras/dashboard/fonts/DejaVuSans.ttf
 Copyright: 2003 Bitstream, Inc.
            2006 Tavmjong Bah
 License: bitstream-vera
@@ -79,7 +77,7 @@ License: bitstream-vera
  Inc., respectively. For further information, contact: fonts at gnome dot
  org.
 
-Files: examples/quick/extras/gallery/fonts/OpenSans-Regular.ttf
+Files: examples/quickcontrols/extras/gallery/fonts/OpenSans-Regular.ttf
        src/extras/Styles/Flat/fonts/OpenSans-*.ttf
 Copyright: Steve Matteson
 License: Apache-2.0
@@ -94,19 +92,6 @@ License: Apache-2.0
  .
  On Debian systems, the full text of Apache License, Version 2.0 can
  be found in /usr/share/common-licenses/Apache-2.0.
-
-License: LGPL-2.1
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License, version 2.1
- as published by the Free Software Foundation.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- .
- On Debian systems, the full text of GNU Lesser General Public License,
- version 2.1 can be found in /usr/share/common-licenses/LGPL-2.1.
 
 License: LGPL-3
  This program is free software: you can redistribute it and/or modify
@@ -133,6 +118,40 @@ License: GPL-2
  .
  On Debian systems, the full text of GNU General Public License,
  version 2 can be found in /usr/share/common-licenses/GPL-2.
+
+License: GPL-3 with Qt-1.0 exception
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License version 3 as
+ published by the Free Software Foundation.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 3 can be found in /usr/share/common-licenses/GPL-3.
+ .
+ The Qt Company GPL Exception 1.0
+ Exception 1:
+ .
+ As a special exception you may create a larger work which contains the
+ output of this application and distribute that work under terms of your
+ choice, so long as the work is not otherwise derived from or based on
+ this application and so long as the work does not in itself generate
+ output that contains the output from this application in its original
+ or modified form.
+ .
+ Exception 2:
+ .
+ As a special exception, you have permission to combine this application
+ with Plugins licensed under the terms of your choice, to produce an
+ executable, and to copy and distribute the resulting executable under
+ the terms of your choice. However, the executable must be accompanied
+ by a prominent notice offering all users of the executable the entire
+ source code to this application, excluding the source code of the
+ independent modules, but including any changes you have made to this
+ application, under the terms of this license.
 
 License: BSD-3-clause
  You may use this file under the terms of the BSD license as follows:
@@ -163,13 +182,10 @@ License: BSD-3-clause
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 License: GFDL-NIV-1.3
- GNU Free Documentation License Usage
- Alternatively, this file may be used under the terms of the GNU Free
- Documentation License version 1.3 as published by the Free Software
- Foundation and appearing in the file included in the packaging of
- this file.  Please review the following information to ensure
- the GNU Free Documentation License version 1.3 requirements
- will be met: http://www.gnu.org/copyleft/fdl.html.
+ Permission is granted to copy, distribute and/or modify this document
+ under the terms of the GNU Free Documentation License, Version 1.3
+ or any later version published by the Free Software Foundation;
+ with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
  .
- On Debian systems, the complete text of the GFDL-1.3 license can be found in
- `/usr/share/common-licenses/GFDL-1.3`,
+ On Debian systems, the complete text of the GNU Free Documentation
+ License version 1.3 can be found in /usr/share/common-licenses/GFDL-1.3.

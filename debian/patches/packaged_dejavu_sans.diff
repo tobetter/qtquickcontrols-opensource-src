@@ -1,0 +1,25 @@
+Description: use packaged DejaVu Sans font
+Author: Dmitry Shachnev <mitya57@debian.org>
+Forwarded: not-needed
+Last-Update: 2016-07-11
+
+--- a/examples/quickcontrols/extras/dashboard/dashboard.qrc
++++ b/examples/quickcontrols/extras/dashboard/dashboard.qrc
+@@ -1,6 +1,5 @@
+ <RCC>
+     <qresource prefix="/">
+-        <file>fonts/DejaVuSans.ttf</file>
+         <file>images/fuel-icon.png</file>
+         <file>images/temperature-icon.png</file>
+         <file>qml/dashboard.qml</file>
+--- a/examples/quickcontrols/extras/dashboard/main.cpp
++++ b/examples/quickcontrols/extras/dashboard/main.cpp
+@@ -57,7 +57,7 @@
+ {
+     QGuiApplication app(argc, argv);
+ 
+-    QFontDatabase::addApplicationFont(":/fonts/DejaVuSans.ttf");
++    QFontDatabase::addApplicationFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+     app.setFont(QFont("DejaVu Sans"));
+ 
+     QQmlApplicationEngine engine(QUrl("qrc:/qml/dashboard.qml"));

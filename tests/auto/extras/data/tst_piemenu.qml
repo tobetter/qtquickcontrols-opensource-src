@@ -1,12 +1,22 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the test suite of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** BSD License Usage
+** Alternatively, you may use this file under the terms of the BSD license
+** as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -127,9 +137,9 @@ Item {
             root = pieMenuComponent.createObject(container);
             var mouseArea = root.mouseArea;
             var pieMenu = root.pieMenu;
-            currentIndexSignalSpy.signalName = "onCurrentIndexChanged"
+            currentIndexSignalSpy.signalName = "currentIndexChanged"
             currentIndexSignalSpy.target = pieMenu;
-            actionSignalSpy.signalName = "onActionTriggered";
+            actionSignalSpy.signalName = "actionTriggered";
             actionSignalSpy.target = root;
 
             compare(pieMenu.triggerMode, TriggerMode.TriggerOnClick);
@@ -537,7 +547,7 @@ Item {
             compare(pieMenu.__style.endAngle, originalEndAngle);
 
             for (i = 0; i < data.indexVisibility.length; ++i) {
-                actionSignalSpy.signalName = "onActionTriggered";
+                actionSignalSpy.signalName = "actionTriggered";
                 actionSignalSpy.target = root;
 
                 compare(pieMenu.visible, false);
@@ -702,7 +712,7 @@ Item {
             // Move over middle item
             mouseMove(root, 100, 50)
             compare(pieMenu.currentIndex, 1)
-            selectedAngleChangedSpy.signalName = "onSelectionAngleChanged"
+            selectedAngleChangedSpy.signalName = "selectionAngleChanged"
             selectedAngleChangedSpy.target = pieMenu;
             // Move outside the middle item without changing angle
             mouseMove(root, 100, 98)
@@ -727,7 +737,7 @@ Item {
             if (pieMenu.__style.title)
                 tryCompare(pieMenu.__panel.titleItem, "text", "Action 1");
 
-            actionSignalSpy.signalName = "onActionTriggered";
+            actionSignalSpy.signalName = "actionTriggered";
             actionSignalSpy.target = root;
             mouseClick(root, 230, 145);
             compare(actionSignalSpy.count, 1);
@@ -801,7 +811,7 @@ Item {
             tryCompare(pieMenuComponent, "status", Component.Ready);
             root = pieMenuComponent.createObject(container);
             var pieMenu = root.pieMenu;
-            actionSignalSpy.signalName = "onActionTriggered";
+            actionSignalSpy.signalName = "actionTriggered";
             actionSignalSpy.target = root;
 
             mouseClick(root, 0, 0, Qt.LeftButton);
@@ -830,7 +840,7 @@ Item {
             tryCompare(pieMenuComponent, "status", Component.Ready);
             root = pieMenuComponent.createObject(container);
             pieMenu = root.pieMenu;
-            actionSignalSpy.signalName = "onActionTriggered";
+            actionSignalSpy.signalName = "actionTriggered";
             actionSignalSpy.target = root;
 
             mouseClick(root, 0, 0, Qt.LeftButton);

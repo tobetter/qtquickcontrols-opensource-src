@@ -1,3 +1,27 @@
+qtquickcontrols-opensource-src (5.7.0-1) experimental; urgency=medium
+
+  [ Harald Sitter ]
+  * New upstream release.
+  * Remove package qml-module-qtquick-layouts (moved to qtdeclarative)
+  * qtquickcontrols5-examples no longer depends on the now moved layouts
+  * qml-module-qtquick-controls now depends on layouts without a version lock
+  * qml-module-qtquick-extras now depends on layouts without a version lock
+
+  [ Dmitry Shachnev ]
+  * Update debian/copyright.
+  * Bump Qt build-dependencies to 5.7.0.
+  * Drop obsolete Breaks/Replaces.
+  * Make the examples package depend on qml-module-qtquick-extras.
+  * Make qml-module-qtquick-controls depend on qml-module-qtgraphicaleffects.
+  * Add a patch to make the Dashboard example use packaged DejaVu Sans font
+    (packaged_dejavu_sans.diff).
+  * Run tests during build.
+    - Build with QT_BUILD_PARTS+=tests.
+    - Add build-dependencies on various QML modules and Xvfb.
+    - Disable one failing test, test_windowHeight2 (skip_failing_test.diff).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 12 Jul 2016 17:07:08 +0300
+
 qtquickcontrols-opensource-src (5.6.1-2) unstable; urgency=medium
 
   * Upload to unstable.
