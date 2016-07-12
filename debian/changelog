@@ -1,3 +1,10 @@
+qtquickcontrols-opensource-src (5.7.0-2) experimental; urgency=medium
+
+  * Run the tests with --no-parallel, otherwise qWaitForWindowActive() does
+    not work.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 12 Jul 2016 23:50:19 +0300
+
 qtquickcontrols-opensource-src (5.7.0-1) experimental; urgency=medium
 
   [ Harald Sitter ]
