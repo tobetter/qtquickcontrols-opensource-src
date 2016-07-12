@@ -1,12 +1,22 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the test suite of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** BSD License Usage
+** Alternatively, you may use this file under the terms of the BSD license
+** as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -136,7 +146,7 @@ Item {
             var sliderDeltaRatio = 1; //(slider.maximumValue - slider.minimumValue)/slider.width
             var ratio = mouseRatio / sliderDeltaRatio
 
-            mouseWheel(slider, 5, 5, 20 * ratio, 0)
+            mouseWheel(slider, 5, 5, -20 * ratio, 0)
             compare(slider.value, 22)
 
             slider.maximumValue = 30
@@ -149,15 +159,15 @@ Item {
             compare(slider.value, 10)
 
             var previousValue = slider.value
-            mouseWheel(slider, 5, 5, 6 * ratio, 0)
+            mouseWheel(slider, 5, 5, -6 * ratio, 0)
             compare(slider.value, Math.round(previousValue + 6))
 
-            mouseWheel(slider, 5, 5, -6 * ratio, 0)
+            mouseWheel(slider, 5, 5, 6 * ratio, 0)
             compare(slider.value, previousValue)
 
             // Reach maximum
             slider.value = 0
-            mouseWheel(slider, 5, 5, 40 * ratio, 0)
+            mouseWheel(slider, 5, 5, -40 * ratio, 0)
             compare(slider.value, slider.maximumValue)
             slider.destroy()
         }

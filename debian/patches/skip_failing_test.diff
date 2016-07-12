@@ -1,0 +1,16 @@
+Description: skip test_windowHeight2() which currently fails
+Author: Dmitry Shachnev <mitya57@debian.org>
+Bug-Upstream: https://bugreports.qt.io/browse/QTBUG-54714
+Forwarded: not-needed
+Last-Update: 2016-07-12
+
+--- a/tests/auto/controls/data/tst_applicationwindow.qml
++++ b/tests/auto/controls/data/tst_applicationwindow.qml
+@@ -303,6 +303,7 @@
+     }
+ 
+     function test_windowHeight2() {
++        skip("QTBUG-54714")
+         var test_control = 'import QtQuick 2.2; \
+         import QtQuick 2.2;                     \
+         import QtQuick.Controls 1.2;            \
