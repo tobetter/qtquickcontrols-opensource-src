@@ -1,0 +1,182 @@
+From 59c6c0e0b1b5b46747595a58e11311b7393d7e70 Mon Sep 17 00:00:00 2001
+From: Mitch Curtis <mitch.curtis@qt.io>
+Date: Tue, 13 Sep 2016 10:23:22 +0200
+Subject: [PATCH] Fix crash on exit when using default property aliases with
+ layouts
+
+The layout was being destroyed before the text, which meant that the
+removeItemChangeListener() call never got hit. To ensure that the
+listener is always removed, loop through each child in QQuickLayout's
+destructor.
+
+Task-number: QTBUG-51927
+Change-Id: I4235579501bd1790e9483a8741915e55f1b1b803
+Reviewed-by: Frederik Gladhorn <frederik.gladhorn@qt.io>
+Reviewed-by: J-P Nurmi <jpnurmi@qt.io>
+---
+ src/layouts/qquicklayout.cpp                      |  3 ++
+ tests/auto/controls/data/layout/Container.qml     | 55 +++++++++++++++++++++++
+ tests/auto/controls/data/layout/ContainerUser.qml | 53 ++++++++++++++++++++++
+ tests/auto/controls/data/tst_layout.qml           | 11 +++++
+ 4 files changed, 122 insertions(+)
+ create mode 100644 tests/auto/controls/data/layout/Container.qml
+ create mode 100644 tests/auto/controls/data/layout/ContainerUser.qml
+
+diff --git a/src/layouts/qquicklayout.cpp b/src/layouts/qquicklayout.cpp
+index f28a7d0..a7e6319 100644
+--- a/src/layouts/qquicklayout.cpp
++++ b/src/layouts/qquicklayout.cpp
+@@ -695,6 +695,9 @@ QQuickLayout::QQuickLayout(QQuickLayoutPrivate &dd, QQuickItem *parent)
+ QQuickLayout::~QQuickLayout()
+ {
+     d_func()->m_isReady = false;
++
++    foreach (QQuickItem *child, d_func()->childItems)
++        QQuickItemPrivate::get(child)->removeItemChangeListener(this, QQuickItemPrivate::SiblingOrder);
+ }
+ 
+ QQuickLayoutAttached *QQuickLayout::qmlAttachedProperties(QObject *object)
+diff --git a/tests/auto/controls/data/layout/Container.qml b/tests/auto/controls/data/layout/Container.qml
+new file mode 100644
+index 0000000..db3d68c
+--- /dev/null
++++ b/tests/auto/controls/data/layout/Container.qml
+@@ -0,0 +1,55 @@
++/****************************************************************************
++**
++** Copyright (C) 2016 The Qt Company Ltd.
++** Contact: http://www.qt.io/licensing/
++**
++** This file is part of the test suite of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:BSD$
++** You may use this file under the terms of the BSD license as follows:
++**
++** "Redistribution and use in source and binary forms, with or without
++** modification, are permitted provided that the following conditions are
++** met:
++**   * Redistributions of source code must retain the above copyright
++**     notice, this list of conditions and the following disclaimer.
++**   * Redistributions in binary form must reproduce the above copyright
++**     notice, this list of conditions and the following disclaimer in
++**     the documentation and/or other materials provided with the
++**     distribution.
++**   * Neither the name of The Qt Company Ltd nor the names of its
++**     contributors may be used to endorse or promote products derived
++**     from this software without specific prior written permission.
++**
++**
++** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++import QtQuick 2.5
++import QtQuick.Layouts 1.2
++
++Item {
++    objectName: "qtbug51927-window"
++    visible: true
++
++    default property alias _contents: customContent.data
++
++    ColumnLayout {
++        id: customContent
++        objectName: "qtbug51927-columnLayout"
++        anchors.fill: parent
++    }
++}
+diff --git a/tests/auto/controls/data/layout/ContainerUser.qml b/tests/auto/controls/data/layout/ContainerUser.qml
+new file mode 100644
+index 0000000..ff7ce62
+--- /dev/null
++++ b/tests/auto/controls/data/layout/ContainerUser.qml
+@@ -0,0 +1,53 @@
++/****************************************************************************
++**
++** Copyright (C) 2016 The Qt Company Ltd.
++** Contact: http://www.qt.io/licensing/
++**
++** This file is part of the test suite of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:BSD$
++** You may use this file under the terms of the BSD license as follows:
++**
++** "Redistribution and use in source and binary forms, with or without
++** modification, are permitted provided that the following conditions are
++** met:
++**   * Redistributions of source code must retain the above copyright
++**     notice, this list of conditions and the following disclaimer.
++**   * Redistributions in binary form must reproduce the above copyright
++**     notice, this list of conditions and the following disclaimer in
++**     the documentation and/or other materials provided with the
++**     distribution.
++**   * Neither the name of The Qt Company Ltd nor the names of its
++**     contributors may be used to endorse or promote products derived
++**     from this software without specific prior written permission.
++**
++**
++** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++import QtQuick 2.6
++import QtQuick.Window 2.2
++
++Container {
++    visible: true
++
++    Text {
++        objectName: "qtbug51927-text"
++        text: qsTr("Hello World")
++        anchors.centerIn: parent
++        renderType: Text.QtRendering
++    }
++}
+diff --git a/tests/auto/controls/data/tst_layout.qml b/tests/auto/controls/data/tst_layout.qml
+index fc62b8a..da0b1dd 100644
+--- a/tests/auto/controls/data/tst_layout.qml
++++ b/tests/auto/controls/data/tst_layout.qml
+@@ -53,5 +53,16 @@ TestCase {
+         var object = Qt.createQmlObject('import QtQuick 2.2; import QtQuick.Layouts 1.0; QtObject { Layout.fillWidth: true }', testCase, '');
+         object.destroy()
+     }
++
++    function test_defaultPropertyAliasCrash() {
++        var containerUserComponent = Qt.createComponent("layout/ContainerUser.qml");
++        compare(containerUserComponent.status, Component.Ready);
++
++        var containerUser = containerUserComponent.createObject(testCase);
++        verify(containerUser);
++
++        // Shouldn't crash.
++        containerUser.destroy();
++    }
+ }
+ 
+-- 
+2.1.4
+
