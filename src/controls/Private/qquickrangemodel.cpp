@@ -72,6 +72,9 @@ void QQuickRangeModel1Private::init()
     posatmin = 0;
     posatmax = 0;
     inverted = false;
+    isComplete = false;
+    positionChanged = false;
+    valueChanged = false;
 }
 
 /*!
@@ -158,10 +161,16 @@ void QQuickRangeModel1Private::emitValueAndPositionIfChanged(const qreal oldValu
     // unchanged. This will be the case when operating with values outside range:
     const qreal newValue = q->value();
     const qreal newPosition = q->position();
-    if (!qFuzzyCompare(newValue, oldValue))
-        emit q->valueChanged(newValue);
-    if (!qFuzzyCompare(newPosition, oldPosition))
-        emit q->positionChanged(newPosition);
+
+    if (isComplete) {
+        if (!qFuzzyCompare(newValue, oldValue))
+            emit q->valueChanged(newValue);
+        if (!qFuzzyCompare(newPosition, oldPosition))
+            emit q->positionChanged(newPosition);
+    } else {
+        positionChanged |= qFuzzyCompare(oldPosition, newPosition);
+        valueChanged |= !qFuzzyCompare(oldValue, newValue);
+    }
 }
 
 /*!
@@ -266,7 +275,7 @@ void QQuickRangeModel1::setRange(qreal min, qreal max)
 }
 
 /*!
-    \property QQuickRangeModel::minimumValue
+    \property QQuickRangeModel1::minimumValue
     \brief the minimum value that \l value can assume
 
     This property's default value is 0
@@ -285,7 +294,7 @@ qreal QQuickRangeModel1::minimum() const
 }
 
 /*!
-    \property QQuickRangeModel::maximumValue
+    \property QQuickRangeModel1::maximumValue
     \brief the maximum value that \l value can assume
 
     This property's default value is 99
@@ -306,7 +315,7 @@ qreal QQuickRangeModel1::maximum() const
 }
 
 /*!
-    \property QQuickRangeModel::stepSize
+    \property QQuickRangeModel1::stepSize
     \brief the value that is added to the \l value and \l position property
 
     Example: If a user sets a range of [0,100] and stepSize
@@ -349,8 +358,24 @@ qreal QQuickRangeModel1::positionForValue(qreal value) const
     return d->publicPosition(unconstrainedPosition);
 }
 
+void QQuickRangeModel1::classBegin()
+{
+}
+
+void QQuickRangeModel1::componentComplete()
+{
+    Q_D(QQuickRangeModel1);
+    d->isComplete = true;
+    emit minimumChanged(minimum());
+    emit maximumChanged(maximum());
+    if (d->valueChanged)
+        emit valueChanged(value());
+    if (d->positionChanged)
+        emit positionChanged(position());
+}
+
 /*!
-    \property QQuickRangeModel::position
+    \property QQuickRangeModel1::position
     \brief the current position of the model
 
     Represents a valid external position, based on the \l positionAtMinimum,
@@ -385,7 +410,7 @@ void QQuickRangeModel1::setPosition(qreal newPosition)
 }
 
 /*!
-    \property QQuickRangeModel::positionAtMinimum
+    \property QQuickRangeModel1::positionAtMinimum
     \brief the minimum value that \l position can assume
 
     This property's default value is 0
@@ -404,7 +429,7 @@ qreal QQuickRangeModel1::positionAtMinimum() const
 }
 
 /*!
-    \property QQuickRangeModel::positionAtMaximum
+    \property QQuickRangeModel1::positionAtMaximum
     \brief the maximum value that \l position can assume
 
     This property's default value is 0
@@ -437,7 +462,7 @@ qreal QQuickRangeModel1::valueForPosition(qreal position) const
 }
 
 /*!
-    \property QQuickRangeModel::value
+    \property QQuickRangeModel1::value
     \brief the current value of the model
 
     Represents a valid external value, based on the \l minimumValue,
@@ -472,7 +497,7 @@ void QQuickRangeModel1::setValue(qreal newValue)
 }
 
 /*!
-    \property QQuickRangeModel::inverted
+    \property QQuickRangeModel1::inverted
     \brief the model is inverted or not
 
     The model can be represented with an inverted behavior, e.g. when \l value assumes

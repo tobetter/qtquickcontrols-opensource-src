@@ -48,31 +48,14 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.2
-import QtTest 1.0
+import QtQuick 2.4
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
-TestCase {
-    id: testCase
-    name: "Tests_Layout"
-    when:windowShown
-    width:400
-    height:400
-
-    function test_invalidParent() {
-        ignoreWarning('Layout must be attached to Item elements')
-        var object = Qt.createQmlObject('import QtQuick 2.2; import QtQuick.Layouts 1.0; QtObject { Layout.fillWidth: true }', testCase, '');
-        object.destroy()
-    }
-
-    function test_defaultPropertyAliasCrash() {
-        var containerUserComponent = Qt.createComponent("layout/ContainerUser.qml");
-        compare(containerUserComponent.status, Component.Ready);
-
-        var containerUser = containerUserComponent.createObject(testCase);
-        verify(containerUser);
-
-        // Shouldn't crash.
-        containerUser.destroy();
+ButtonStyle {
+    background: Rectangle {
+        implicitWidth: 200
+        implicitHeight: 50
+        color: "blue"
     }
 }
-
