@@ -1,3 +1,9 @@
+qtquickcontrols-opensource-src (5.7.1~20161021-2build1~2) zesty; urgency=medium
+
+  * No change rebuild
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Tue, 03 Jan 2017 13:09:44 +0200
+
 qtquickcontrols-opensource-src (5.7.1~20161021-2) unstable; urgency=medium
 
   * Upload to unstable.
