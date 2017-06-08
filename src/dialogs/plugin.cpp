@@ -66,8 +66,6 @@ static void initResources()
 {
 #ifdef QT_STATIC
     Q_INIT_RESOURCE(qmake_QtQuick_Dialogs);
-#else
-    Q_INIT_RESOURCE(dialogs);
 #endif
 }
 
@@ -177,7 +175,7 @@ public:
         // Dialog
         {
             // @uri QtQuick.Dialogs.AbstractDialog
-            qmlRegisterType<QQuickDialog>(uri, 1, 2, "AbstractDialog"); // implementation wrapper
+            qmlRegisterType<QQuickDialog1>(uri, 1, 2, "AbstractDialog"); // implementation wrapper
             QUrl dialogQmlPath = m_useResources ?
                 QUrl("qrc:/QtQuick/Dialogs/DefaultDialogWrapper.qml") :
 #ifndef QT_STATIC

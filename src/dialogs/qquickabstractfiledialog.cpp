@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 QQuickAbstractFileDialog::QQuickAbstractFileDialog(QObject *parent)
     : QQuickAbstractDialog(parent)
     , m_dlgHelper(0)
-    , m_options(QSharedPointer<QFileDialogOptions>(new QFileDialogOptions()))
+    , m_options(QFileDialogOptions::create())
     , m_selectExisting(true)
     , m_selectMultiple(false)
     , m_selectFolder(false)
@@ -115,16 +115,28 @@ QUrl QQuickAbstractFileDialog::folder() const
     return m_options->initialDirectory();
 }
 
-void QQuickAbstractFileDialog::setFolder(const QUrl &f)
+static QUrl fixupFolder(const QUrl &f)
 {
     QString lf = f.toLocalFile();
     while (lf.startsWith("//"))
         lf.remove(0, 1);
     if (lf.isEmpty())
         lf = QDir::currentPath();
-    QUrl u = QUrl::fromLocalFile(lf);
+    return QUrl::fromLocalFile(lf);
+}
+
+void QQuickAbstractFileDialog::setFolder(const QUrl &f)
+{
+    QUrl u = fixupFolder(f);
     if (m_dlgHelper)
         m_dlgHelper->setDirectory(u);
+    m_options->setInitialDirectory(u);
+    emit folderChanged();
+}
+
+void QQuickAbstractFileDialog::updateFolder(const QUrl &f)
+{
+    QUrl u = fixupFolder(f);
     m_options->setInitialDirectory(u);
     emit folderChanged();
 }
@@ -174,6 +186,7 @@ QStringList QQuickAbstractFileDialog::selectedNameFilterExtensions() const
 {
     QString filterRaw = selectedNameFilter();
     QStringList ret;
+#if QT_CONFIG(regularexpression)
     if (filterRaw.isEmpty()) {
         ret << "*";
         return ret;
@@ -182,6 +195,7 @@ QStringList QQuickAbstractFileDialog::selectedNameFilterExtensions() const
     QRegularExpressionMatchIterator i = re.globalMatch(filterRaw);
     while (i.hasNext())
         ret << i.next().captured(1);
+#endif // QT_CONFIG(regularexpression)
     if (ret.isEmpty())
         ret << filterRaw;
     return ret;

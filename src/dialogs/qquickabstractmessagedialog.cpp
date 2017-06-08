@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 QQuickAbstractMessageDialog::QQuickAbstractMessageDialog(QObject *parent)
     : QQuickAbstractDialog(parent)
     , m_dlgHelper(0)
-    , m_options(QSharedPointer<QMessageDialogOptions>(new QMessageDialogOptions()))
+    , m_options(QMessageDialogOptions::create())
     , m_clickedButton(NoButton)
 {
 }

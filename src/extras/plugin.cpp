@@ -50,9 +50,7 @@
 
 static void initResources()
 {
-#ifndef QT_STATIC
-    Q_INIT_RESOURCE(extras);
-#else
+#ifdef QT_STATIC
     Q_INIT_RESOURCE(qmake_QtQuick_Extras);
 #endif
 }
@@ -75,7 +73,7 @@ QtQuickExtrasPlugin::QtQuickExtrasPlugin(QObject *parent) :
 void QtQuickExtrasPlugin::registerTypes(const char *uri)
 {
 #ifndef QT_STATIC
-    const QString prefix = "qrc:///ExtrasImports/QtQuick/Extras";
+    const QString prefix = baseUrl().toString();
 #else
     const QString prefix = "qrc:/qt-project.org/imports/QtQuick/Extras";
 #endif
@@ -98,7 +96,9 @@ void QtQuickExtrasPlugin::registerTypes(const char *uri)
     // register 1.3
     qmlRegisterUncreatableType<QQuickTriggerMode>(uri, 1, 3, "TriggerMode", QLatin1String("Do not create objects of type TriggerMode"));
     // register 1.4
+#if QT_CONFIG(picture)
     qmlRegisterType<QQuickPicture>(uri, 1, 4, "Picture");
+#endif
 }
 
 void QtQuickExtrasPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -111,7 +111,7 @@ void QtQuickExtrasPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
     qmlRegisterSingletonType<QQuickMathUtils>("QtQuick.Extras.Private.CppUtils", 1, 0, "MathUtils", registerMathUtilsSingleton);
 
 #ifndef QT_STATIC
-    const QString prefix = "qrc:///ExtrasImports/QtQuick/Extras";
+    const QString prefix = baseUrl().toString();
 #else
     const QString prefix = "qrc:/qt-project.org/imports/QtQuick/Extras";
 #endif

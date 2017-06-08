@@ -52,7 +52,7 @@ class QQuickFontListModelPrivate
 public:
     QQuickFontListModelPrivate(QQuickFontListModel *q)
         : q_ptr(q), ws(QFontDatabase::Any)
-        , options(QSharedPointer<QFontDialogOptions>(new QFontDialogOptions()))
+        , options(QFontDialogOptions::create())
     {}
 
     QQuickFontListModel *q_ptr;

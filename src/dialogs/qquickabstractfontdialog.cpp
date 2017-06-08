@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 QQuickAbstractFontDialog::QQuickAbstractFontDialog(QObject *parent)
     : QQuickAbstractDialog(parent)
     , m_dlgHelper(0)
-    , m_options(QSharedPointer<QFontDialogOptions>(new QFontDialogOptions()))
+    , m_options(QFontDialogOptions::create())
 {
     // On the Mac, modality doesn't work unless you call exec().  But this is a reasonable default anyway.
     m_modality = Qt::NonModal;
