@@ -45,12 +45,12 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qapplication.h>
-#include <qsgsimpletexturenode.h>
 #include <qquickwindow.h>
 #include "private/qguiapplication_p.h"
 #include <QtQuick/private/qquickwindow_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtGui/qpa/qplatformtheme.h>
+#include <QtQuick/qsgninepatchnode.h>
 #include "../qquickmenuitem_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -95,122 +95,6 @@ CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
 }
 
 #endif
-
-class QQuickStyleNode1 : public QSGNinePatchNode
-{
-public:
-    QQuickStyleNode1()
-        : m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
-    {
-        m_geometry.setDrawingMode(GL_TRIANGLE_STRIP);
-        setGeometry(&m_geometry);
-        // The texture material has mipmap filtering set to Nearest by default. This is not ideal.
-        m_material.setMipmapFiltering(QSGTexture::None);
-        setMaterial(&m_material);
-    }
-
-    ~QQuickStyleNode1()
-    {
-        delete m_material.texture();
-    }
-
-    virtual void setTexture(QSGTexture *texture)
-    {
-        delete m_material.texture();
-        m_material.setTexture(texture);
-    }
-
-    virtual void setBounds(const QRectF &bounds)
-    {
-        m_bounds = bounds;
-    }
-
-    virtual void setDevicePixelRatio(qreal ratio)
-    {
-        m_devicePixelRatio = ratio;
-    }
-
-    virtual void setPadding(qreal left, qreal top, qreal right, qreal bottom)
-    {
-        m_paddingLeft = left;
-        m_paddingTop = top;
-        m_paddingRight = right;
-        m_paddingBottom = bottom;
-    }
-
-    virtual void update() {
-        QSGTexture *texture = m_material.texture();
-
-        if (m_paddingLeft <= 0 && m_paddingTop <= 0 && m_paddingRight <= 0 && m_paddingBottom <= 0) {
-            m_geometry.allocate(4, 0);
-            QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_bounds, texture->normalizedTextureSubRect());
-            markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
-            return;
-        }
-
-        QRectF tc = texture->normalizedTextureSubRect();
-        QSize ts = texture->textureSize();
-        ts.setHeight(ts.height() / m_devicePixelRatio);
-        ts.setWidth(ts.width() / m_devicePixelRatio);
-
-        qreal invtw = tc.width() / ts.width();
-        qreal invth = tc.height() / ts.height();
-
-        struct Coord { qreal p; qreal t; };
-        Coord cx[4] = { { m_bounds.left(), tc.left() },
-                        { m_bounds.left() + m_paddingLeft, tc.left() + m_paddingLeft * invtw },
-                        { m_bounds.right() - m_paddingRight, tc.right() - m_paddingRight * invtw },
-                        { m_bounds.right(), tc.right() }
-                      };
-        Coord cy[4] = { { m_bounds.top(), tc.top() },
-                        { m_bounds.top() + m_paddingTop, tc.top() + m_paddingTop * invth },
-                        { m_bounds.bottom() - m_paddingBottom, tc.bottom() - m_paddingBottom * invth },
-                        { m_bounds.bottom(), tc.bottom() }
-                      };
-
-        m_geometry.allocate(16, 28);
-        QSGGeometry::TexturedPoint2D *v = m_geometry.vertexDataAsTexturedPoint2D();
-        for (int y=0; y<4; ++y) {
-            for (int x=0; x<4; ++x) {
-                v->set(cx[x].p, cy[y].p, cx[x].t, cy[y].t);
-                ++v;
-            }
-        }
-
-        quint16 *i = m_geometry.indexDataAsUShort();
-        for (int r=0; r<3; ++r) {
-            if (r > 0)
-                *i++ = 4 * r;
-            for (int c=0; c<4; ++c) {
-                i[0] = 4 * r + c;
-                i[1] = 4 * r + c + 4;
-                i+=2;
-            }
-            if (r < 2)
-                *i++ = 4 * r + 3 + 4;
-        }
-
-        markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
-
-//        v = m_geometry.vertexDataAsTexturedPoint2D();
-//        for (int j=0; j<m_geometry.vertexCount(); ++j)
-//            qDebug() << v[j].x << v[j].y << v[j].tx << v[j].ty;
-
-//        i = m_geometry.indexDataAsUShort();
-//        for (int j=0; j<m_geometry.indexCount(); ++j)
-//            qDebug() << i[j];
-
-    }
-
-    QRectF m_bounds;
-    qreal m_devicePixelRatio;
-    qreal m_paddingLeft;
-    qreal m_paddingTop;
-    qreal m_paddingRight;
-    qreal m_paddingBottom;
-    QSGGeometry m_geometry;
-    QSGTextureMaterial m_material;
-};
 
 QQuickStyleItem1::QQuickStyleItem1(QQuickItem *parent)
     : QQuickItem(parent),
@@ -279,30 +163,42 @@ QQuickStyleItem1::~QQuickStyleItem1()
 {
     if (const QStyleOptionButton *aux = qstyleoption_cast<const QStyleOptionButton*>(m_styleoption))
         delete aux;
+#if QT_CONFIG(itemviews)
     else if (const QStyleOptionViewItem *aux = qstyleoption_cast<const QStyleOptionViewItem*>(m_styleoption))
         delete aux;
+#endif
     else if (const QStyleOptionHeader *aux = qstyleoption_cast<const QStyleOptionHeader*>(m_styleoption))
         delete aux;
     else if (const QStyleOptionToolButton *aux = qstyleoption_cast<const QStyleOptionToolButton*>(m_styleoption))
         delete aux;
+#if QT_CONFIG(toolbar)
     else if (const QStyleOptionToolBar *aux = qstyleoption_cast<const QStyleOptionToolBar*>(m_styleoption))
         delete aux;
+#endif
+#if QT_CONFIG(tabbar)
     else if (const QStyleOptionTab *aux = qstyleoption_cast<const QStyleOptionTab*>(m_styleoption))
         delete aux;
+#endif
     else if (const QStyleOptionFrame *aux = qstyleoption_cast<const QStyleOptionFrame*>(m_styleoption))
         delete aux;
     else if (const QStyleOptionFocusRect *aux = qstyleoption_cast<const QStyleOptionFocusRect*>(m_styleoption))
         delete aux;
+#if QT_CONFIG(tabwidget)
     else if (const QStyleOptionTabWidgetFrame *aux = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>(m_styleoption))
         delete aux;
+#endif
     else if (const QStyleOptionMenuItem *aux = qstyleoption_cast<const QStyleOptionMenuItem*>(m_styleoption))
         delete aux;
     else if (const QStyleOptionComboBox *aux = qstyleoption_cast<const QStyleOptionComboBox*>(m_styleoption))
         delete aux;
+#if QT_CONFIG(spinbox)
     else if (const QStyleOptionSpinBox *aux = qstyleoption_cast<const QStyleOptionSpinBox*>(m_styleoption))
         delete aux;
+#endif
+#if QT_CONFIG(slider)
     else if (const QStyleOptionSlider *aux = qstyleoption_cast<const QStyleOptionSlider*>(m_styleoption))
         delete aux;
+#endif
     else if (const QStyleOptionProgressBar *aux = qstyleoption_cast<const QStyleOptionProgressBar*>(m_styleoption))
         delete aux;
     else if (const QStyleOptionGroupBox *aux = qstyleoption_cast<const QStyleOptionGroupBox*>(m_styleoption))
@@ -365,6 +261,7 @@ void QQuickStyleItem1::initStyleOption()
         }
     }
         break;
+#if QT_CONFIG(itemviews)
     case ItemRow: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionViewItem();
@@ -375,14 +272,14 @@ void QQuickStyleItem1::initStyleOption()
             opt->features |= QStyleOptionViewItem::Alternate;
     }
         break;
-
+#endif // QT_CONFIG(itemviews)
     case Splitter: {
         if (!m_styleoption) {
             m_styleoption = new QStyleOption;
         }
     }
         break;
-
+#if QT_CONFIG(itemviews)
     case Item: {
         if (!m_styleoption) {
             m_styleoption = new QStyleOptionViewItem();
@@ -404,6 +301,7 @@ void QQuickStyleItem1::initStyleOption()
         }
     }
         break;
+#endif // QT_CONFIG(itemviews)
     case ItemBranchIndicator: {
         if (!m_styleoption)
             m_styleoption = new QStyleOption;
@@ -473,11 +371,14 @@ void QQuickStyleItem1::initStyleOption()
 
     }
         break;
+#if QT_CONFIG(toolbar)
     case ToolBar: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionToolBar();
     }
         break;
+#endif
+#if QT_CONFIG(tabbar)
     case Tab: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionTab();
@@ -511,7 +412,7 @@ void QQuickStyleItem1::initStyleOption()
 
 
     } break;
-
+#endif // QT_CONFIG(tabbar)
     case Frame: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionFrame();
@@ -529,6 +430,7 @@ void QQuickStyleItem1::initStyleOption()
         m_styleoption->state |= QStyle::State_KeyboardFocusChange;
     }
         break;
+#if QT_CONFIG(tabwidget)
     case TabFrame: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionTabWidgetFrame();
@@ -543,6 +445,7 @@ void QQuickStyleItem1::initStyleOption()
         opt->leftCornerWidgetSize = QSize(value(), 0);
     }
         break;
+#endif // QT_CONFIG(tabwidget)
     case MenuBar:
         if (!m_styleoption) {
             QStyleOptionMenuItem *menuOpt = new QStyleOptionMenuItem();
@@ -678,6 +581,7 @@ void QQuickStyleItem1::initStyleOption()
 #endif
     }
         break;
+#if QT_CONFIG(spinbox)
     case SpinBox: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionSpinBox();
@@ -697,6 +601,8 @@ void QQuickStyleItem1::initStyleOption()
             opt->stepEnabled |= QAbstractSpinBox::StepDownEnabled;
     }
         break;
+#endif // QT_CONFIG(spinbox)
+#if QT_CONFIG(slider)
     case Slider:
     case Dial:
     {
@@ -733,6 +639,7 @@ void QQuickStyleItem1::initStyleOption()
         opt->activeSubControls = QStyle::SC_SliderHandle;
     }
         break;
+#endif // QT_CONFIG(slider)
     case ProgressBar: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionProgressBar();
@@ -763,6 +670,7 @@ void QQuickStyleItem1::initStyleOption()
 
     }
         break;
+#if QT_CONFIG(slider)
     case ScrollBar: {
         if (!m_styleoption)
             m_styleoption = new QStyleOptionSlider();
@@ -788,6 +696,7 @@ void QQuickStyleItem1::initStyleOption()
         setTransient(qApp->style()->styleHint(QStyle::SH_ScrollBar_Transient, m_styleoption));
         break;
     }
+#endif // QT_CONFIG(slider)
     default:
         break;
     }
@@ -1166,12 +1075,14 @@ qreal QQuickStyleItem1::baselineOffset()
                 r.adjust(0,0,0,1);
         }
         break;
+#if QT_CONFIG(spinbox)
     case SpinBox:
         if (const QStyleOptionSpinBox *spinbox = qstyleoption_cast<const QStyleOptionSpinBox *>(m_styleoption)) {
             r = qApp->style()->subControlRect(QStyle::CC_SpinBox, spinbox, QStyle::SC_SpinBoxEditField);
             ceilResult = false;
         }
         break;
+#endif
     default:
         break;
     }
@@ -1313,8 +1224,10 @@ QVariant QQuickStyleItem1::styleHint(const QString &metric)
         return qApp->style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick);
     else if (metric == QLatin1String("submenupopupdelay"))
         return qApp->style()->styleHint(QStyle::SH_Menu_SubMenuPopupDelay, m_styleoption);
+#if QT_CONFIG(wheelevent)
     else if (metric == QLatin1String("wheelScrollLines"))
         return qApp->wheelScrollLines();
+#endif
     return 0;
 
     // Add SH_Menu_SpaceActivatesItem
@@ -1860,11 +1773,8 @@ QSGNode *QQuickStyleItem1::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     }
 
     QSGNinePatchNode *styleNode = static_cast<QSGNinePatchNode *>(node);
-    if (!styleNode) {
-        styleNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createNinePatchNode();
-        if (!styleNode)
-            styleNode = new QQuickStyleNode1;
-    }
+    if (!styleNode)
+        styleNode = window()->createNinePatchNode();
 
 #ifdef QSG_RUNTIME_DESCRIPTION
     qsgnode_set_description(styleNode,
@@ -1911,7 +1821,7 @@ QPixmap QQuickTableRowImageProvider1::requestPixmap(const QString &id, QSize *si
         *size = QSize(width, height);
 
     QPixmap pixmap(width, height);
-
+#if QT_CONFIG(itemviews)
     QStyleOptionViewItem opt;
     opt.state |= QStyle::State_Enabled;
     opt.rect = QRect(0, 0, width, height);
@@ -1940,6 +1850,9 @@ QPixmap QQuickTableRowImageProvider1::requestPixmap(const QString &id, QSize *si
         QPainter pixpainter(&pixmap);
         qApp->style()->drawPrimitive(QStyle::PE_PanelItemViewRow, &opt, &pixpainter);
     }
+#else
+    Q_UNUSED(id);
+#endif
     return pixmap;
 }
 
