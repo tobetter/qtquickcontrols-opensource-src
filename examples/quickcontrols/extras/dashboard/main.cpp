@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QFontDatabase::addApplicationFont(":/fonts/DejaVuSans.ttf");
+    QFontDatabase::addApplicationFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
     app.setFont(QFont("DejaVu Sans"));
 
     QQmlApplicationEngine engine(QUrl("qrc:/qml/dashboard.qml"));
