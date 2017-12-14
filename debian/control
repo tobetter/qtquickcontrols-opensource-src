@@ -1,7 +1,8 @@
 Source: qtquickcontrols-opensource-src
 Section: libs
 Priority: optional
-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
 Uploaders: Sune Vuorela <debian@pusling.com>,
            Pino Toscano <pino@debian.org>,
            Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>,
@@ -10,22 +11,22 @@ Uploaders: Sune Vuorela <debian@pusling.com>,
 Build-Depends: debhelper (>= 10.3),
                dpkg-dev (>= 1.17.14),
                pkg-kde-tools (>= 0.15.26~),
-               qml-module-qt-labs-folderlistmodel (>= 5.9.2~),
-               qml-module-qt-labs-settings (>= 5.9.2~),
-               qml-module-qtgraphicaleffects (>= 5.9.2~),
-               qml-module-qtqml-models2 (>= 5.9.2~),
-               qml-module-qtquick-layouts (>= 5.9.2~),
-               qml-module-qtquick-window2 (>= 5.9.2~),
-               qml-module-qttest (>= 5.9.2~),
-               qtbase5-private-dev (>= 5.9.2+dfsg~),
-               qtdeclarative5-dev-tools (>= 5.9.2~),
-               qtdeclarative5-private-dev (>= 5.9.2~),
+               qml-module-qt-labs-folderlistmodel (>= 5.9.3~),
+               qml-module-qt-labs-settings (>= 5.9.3~),
+               qml-module-qtgraphicaleffects (>= 5.9.3~),
+               qml-module-qtqml-models2 (>= 5.9.3~),
+               qml-module-qtquick-layouts (>= 5.9.3~),
+               qml-module-qtquick-window2 (>= 5.9.3~),
+               qml-module-qttest (>= 5.9.3~),
+               qtbase5-private-dev (>= 5.9.3+dfsg~),
+               qtdeclarative5-dev-tools (>= 5.9.3~),
+               qtdeclarative5-private-dev (>= 5.9.3~),
                xauth,
                xvfb
-Build-Depends-Indep: libqt5sql5-sqlite (>= 5.9.2+dfsg~) <!nodoc>,
-                     qtbase5-doc-html (>= 5.9.2+dfsg~) <!nodoc>,
-                     qtdeclarative5-doc-html (>= 5.9.2~) <!nodoc>,
-                     qttools5-dev-tools (>= 5.9.2~) <!nodoc>
+Build-Depends-Indep: libqt5sql5-sqlite (>= 5.9.3+dfsg~) <!nodoc>,
+                     qtbase5-doc-html (>= 5.9.3+dfsg~) <!nodoc>,
+                     qtdeclarative5-doc-html (>= 5.9.3~) <!nodoc>,
+                     qttools5-dev-tools (>= 5.9.3~) <!nodoc>
 Standards-Version: 4.1.1
 Homepage: http://qt-project.org/
 Vcs-Git: https://anonscm.debian.org/git/pkg-kde/qt/qtquickcontrols.git
