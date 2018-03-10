@@ -51,7 +51,7 @@
 import QtQuick 2.6
 import QtTest 1.0
 import QtQuickControlsTests 1.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 1.6
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.4
 
@@ -136,8 +136,22 @@ Item {
             slider.destroy()
         }
 
+        Component {
+            id: fixedHandleSizeSlider
+
+            Slider {
+                style: SliderStyle {
+                    handle: Rectangle {
+                        color: "red"
+                        implicitWidth: 15
+                        implicitHeight: 15
+                    }
+                }
+            }
+        }
+
         function test_mouseWheel() {
-            var slider = Qt.createQmlObject('import QtQuick.Controls 1.2; Slider {}', container, '');
+            var slider = createTemporaryObject(fixedHandleSizeSlider, container)
             slider.forceActiveFocus()
             slider.value = 0
             slider.maximumValue = 300
@@ -176,7 +190,12 @@ Item {
             slider.value = 0
             mouseWheel(slider, 5, 5, -40 * ratio, 0)
             compare(slider.value, slider.maximumValue)
-            slider.destroy()
+
+            // Mousewheel deactivated
+            slider.value = 0
+            slider.wheelEnabled = false
+            mouseWheel(slider, 5, 5, 4 * ratio, 0)
+            compare(slider.value, 0)
         }
 
         function test_activeFocusOnPress(){
@@ -392,7 +411,7 @@ Item {
             }
         }
 
-        function test_minimumValueLargerThanValue() {
+        function test_minimumMaximumValueLargerThanValue() {
             var control = sliderComponent.createObject(container, { "style": namedHandleStyle, "minimumValue": 0, "maximumValue": 2, value: "minimumValue" });
             verify(control);
 
@@ -404,6 +423,19 @@ Item {
             control.minimumValue = 1;
             compare(control.value, control.minimumValue);
             compare(handle.mapToItem(null, 0, 0).x, 0)
+
+            control.maximumValue = 5;
+            control.value = 5;
+            compare(control.value, 5);
+
+            // get the slider position at max
+            var maxPos = handle.mapToItem(null, 0, 0).x;
+
+            // reduce the maximum value, resulting in the value becoming 4 as well
+            control.maximumValue = 4;
+            compare(control.value, 4);
+            // make sure that the actual position of the handle is the same (it used to be off - see QTBUG-63354)
+            compare(handle.mapToItem(null, 0, 0).x, maxPos);
 
             control.destroy();
         }
