@@ -129,10 +129,13 @@ Item {
 
             compare(calendar.minimumDate, new Date(1, 0, 1));
             compare(calendar.maximumDate, new Date(4000, 0, 1));
-            compare(calendar.selectedDate, new Date(new Date().setHours(0, 0, 0, 0)));
+            var expectedDate = new Date();
+            compare(calendar.selectedDate.getFullYear(), expectedDate.getFullYear());
+            compare(calendar.selectedDate.getMonth(), expectedDate.getMonth());
+            compare(calendar.selectedDate.getDate(), expectedDate.getDate());
             compare(calendar.frameVisible, true);
             compare(calendar.dayOfWeekFormat, Locale.ShortFormat);
-            compare(calendar.__locale, Qt.locale());
+            compare(calendar.locale, Qt.locale());
         }
 
         function test_setAfterConstructed() {
@@ -141,13 +144,13 @@ Item {
             calendar.selectedDate = new Date(1980, 0, 1);
             calendar.frameVisible = false;
             calendar.dayOfWeekFormat = Locale.NarrowFormat;
-            calendar.__locale = Qt.locale("de_DE");
+            calendar.locale = Qt.locale("de_DE");
 
             compare(calendar.minimumDate, new Date(1900, 0, 1));
             compare(calendar.maximumDate, new Date(1999, 11, 31));
             compare(calendar.selectedDate, new Date(1980, 0, 1));
             compare(calendar.frameVisible, false);
-            compare(calendar.__locale, Qt.locale("de_DE"));
+            compare(calendar.locale, Qt.locale("de_DE"));
         }
 
         function test_selectedDate() {
@@ -205,7 +208,7 @@ Item {
             calendar.selectedDate = new Date(2013, 0, 1);
             // Set this to a certain locale, because days will be in different
             // places depending on the system locale of the host machine.
-            calendar.__locale = Qt.locale("en_GB");
+            calendar.locale = Qt.locale("en_GB");
 
             /*         January 2013                    December 2012
                  M   T   W   T   F   S   S        M   T   W   T   F   S   S
@@ -371,7 +374,7 @@ Item {
 
             var startDate = new Date(2013, 0, 1);
             calendar.selectedDate = startDate;
-            calendar.__locale = Qt.locale("en_US");
+            calendar.locale = Qt.locale("en_US");
             compare(calendar.selectedDate, startDate);
 
             pressedSignalSpy.target = calendar;
@@ -406,7 +409,9 @@ Item {
                     expectedDate.setDate(expectedDate.getDate() + cellIndex);
 
                     mousePress(calendar, toPixelsX(day), toPixelsY(week), Qt.LeftButton);
-                    compare(calendar.selectedDate, expectedDate);
+                    compare(calendar.selectedDate.getFullYear(), expectedDate.getFullYear());
+                    compare(calendar.selectedDate.getMonth(), expectedDate.getMonth());
+                    compare(calendar.selectedDate.getDate(), expectedDate.getDate());
                     compare(calendar.__panel.pressedCellIndex, cellIndex);
                     compare(pressedSignalSpy.count, 1);
                     compare(releasedSignalSpy.count, 0);
@@ -434,7 +439,9 @@ Item {
             // Ensure released event does not trigger date selection.
             calendar.selectedDate = startDate;
             mousePress(calendar, toPixelsX(1), toPixelsY(0), Qt.LeftButton);
-            compare(calendar.selectedDate, new Date(2012, 11, 31));
+            compare(calendar.selectedDate.getFullYear(), 2012);
+            compare(calendar.selectedDate.getMonth(), 11);
+            compare(calendar.selectedDate.getDate(), 31);
             compare(calendar.__panel.pressedCellIndex, 1);
             compare(pressedSignalSpy.count, 1);
             compare(releasedSignalSpy.count, 0);
@@ -445,7 +452,9 @@ Item {
             clickedSignalSpy.clear();
 
             mouseRelease(calendar, toPixelsX(1), toPixelsY(0), Qt.LeftButton);
-            compare(calendar.selectedDate, new Date(2012, 11, 31));
+            compare(calendar.selectedDate.getFullYear(), 2012);
+            compare(calendar.selectedDate.getMonth(), 11);
+            compare(calendar.selectedDate.getDate(), 31);
             compare(calendar.__panel.pressedCellIndex, -1);
             compare(pressedSignalSpy.count, 0);
             compare(releasedSignalSpy.count, 1);
@@ -457,7 +466,7 @@ Item {
             calendar.minimumDate = new Date(2013, 0, 1);
             calendar.selectedDate = new Date(startDate);
             calendar.maximumDate = new Date(2013, 1, 5);
-            calendar.__locale = Qt.locale("no_NO");
+            calendar.locale = Qt.locale("no_NO");
 
             pressedSignalSpy.target = calendar;
             pressedSignalSpy.signalName = "pressed";
@@ -531,10 +540,12 @@ Item {
                 22  23  24  25  26  27  28
                 29  30  31   1   2   3   4 */
 
-            calendar.__locale = Qt.locale("en_GB");
+            calendar.locale = Qt.locale("en_GB");
             calendar.selectedDate = new Date(2014, 11, 1);
             mousePress(calendar, toPixelsX(0), toPixelsY(0), Qt.LeftButton);
-            compare(calendar.selectedDate, new Date(2014, 10, 24));
+            compare(calendar.selectedDate.getFullYear(), 2014);
+            compare(calendar.selectedDate.getMonth(), 10);
+            compare(calendar.selectedDate.getDate(), 24);
             mouseRelease(calendar, toPixelsX(0), toPixelsY(0), Qt.LeftButton);
         }
 
@@ -585,7 +596,9 @@ Item {
 
         function dragTo(cellX, cellY, expectedCellIndex, expectedDate) {
             mouseMove(calendar, toPixelsX(cellX), toPixelsY(cellY));
-            compare(calendar.selectedDate, expectedDate);
+            compare(calendar.selectedDate.getFullYear(), expectedDate.getFullYear());
+            compare(calendar.selectedDate.getMonth(), expectedDate.getMonth());
+            compare(calendar.selectedDate.getDate(), expectedDate.getDate());
             compare(calendar.__panel.pressedCellIndex, expectedCellIndex);
             compare(hoveredSignalSpy.count, 1);
             compare(pressedSignalSpy.count, 1);
@@ -602,7 +615,7 @@ Item {
             calendar.minimumDate = new Date(2014, 1, 1);
             calendar.selectedDate = new Date(2014, 1, 28);
             calendar.maximumDate = new Date(2014, 2, 31);
-            calendar.__locale = Qt.locale("en_GB");
+            calendar.locale = Qt.locale("en_GB");
 
             pressedSignalSpy.target = calendar;
             pressedSignalSpy.signalName = "pressed";
@@ -627,7 +640,9 @@ Item {
                  3   4   5   6   7   8   9            3   4   5   6   7   8   9 */
 
             mousePress(calendar, toPixelsX(5), toPixelsY(0), Qt.LeftButton);
-            compare(calendar.selectedDate, new Date(2014, 1, 1));
+            compare(calendar.selectedDate.getFullYear(), 2014);
+            compare(calendar.selectedDate.getMonth(), 1);
+            compare(calendar.selectedDate.getDate(), 1);
             compare(calendar.__panel.pressedCellIndex, 5);
             compare(pressedSignalSpy.count, 1);
             compare(releasedSignalSpy.count, 0);
@@ -875,7 +890,7 @@ Item {
 
         function test_pressAndHold() {
             calendar.selectedDate = new Date(2013, 0, 1);
-            calendar.__locale = Qt.locale("en_GB");
+            calendar.locale = Qt.locale("en_GB");
 
             pressedSignalSpy.target = calendar;
             pressedSignalSpy.signalName = "pressed";

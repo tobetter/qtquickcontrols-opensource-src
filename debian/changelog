@@ -1,3 +1,17 @@
+qtquickcontrols-opensource-src (5.10.1-1) experimental; urgency=medium
+
+  * New upstream release.
+    - Bump Qt build dependencies.
+  * Bump Standards-Version to 4.1.3, no changes required.
+  * Switch Vcs-[Git Browser] to salsa.debian.org.
+  * Bump debhelper compat to 11.
+  * Do not call qmake directly but use dh_auto_configure to let the package
+    cross build (Closes: #881215).
+  * Update debian/watch to follow new upstream naming convention.
+  * Remove trailing space in 5.5.1-1 changelog.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>  Sat, 10 Mar 2018 11:41:11 -0300
+
 qtquickcontrols-opensource-src (5.9.2-2) unstable; urgency=medium
 
   * Upload to unstable.
@@ -137,7 +151,7 @@ qtquickcontrols-opensource-src (5.5.1-1) experimental; urgency=medium
   * Minor debian/copyright fixes.
 
   [ Timo Jyrinki ]
-  * New upstream release. 
+  * New upstream release.
   * Bump build dependencies.
 
  -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 19 Oct 2015 10:42:58 +0000

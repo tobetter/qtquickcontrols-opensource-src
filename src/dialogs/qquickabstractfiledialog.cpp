@@ -298,8 +298,6 @@ void QQuickAbstractFileDialog::populateShortcuts()
     for (const QFileInfo &fi : drives)
         addShortcut(fi.absoluteFilePath(), fi.absoluteFilePath(), fi.absoluteFilePath());
 #endif
-
-    emit shortcutsChanged();
 }
 
 QJSValue QQuickAbstractFileDialog::shortcuts()
@@ -316,6 +314,14 @@ QJSValue QQuickAbstractFileDialog::__shortcuts()
         populateShortcuts();
 
     return m_shortcutDetails;
+}
+
+void QQuickAbstractFileDialog::setDefaultSuffix(const QString &suffix)
+{
+    if (suffix == m_options->defaultSuffix())
+        return;
+    m_options->setDefaultSuffix(suffix);
+    emit defaultSuffixChanged();
 }
 
 QT_END_NAMESPACE
