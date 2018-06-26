@@ -192,7 +192,7 @@ TestCase {
     }
 
     function test_append_find() {
-    var comboBox = Qt.createQmlObject( 'import QtQuick.Controls 1.2;                    \
+        var comboBox = Qt.createQmlObject( 'import QtQuick.Controls 1.2;                    \
                                         import QtQuick 2.2;                             \
                                         ComboBox {                                      \
                                             model:ListModel{ListElement{text:"first"}}  \
