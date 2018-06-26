@@ -1,3 +1,13 @@
+qtquickcontrols-opensource-src (5.11.1-1) experimental; urgency=medium
+
+  * Add my name to Uploaders.
+  * New upstream release.
+  * Bump Standards-version to 4.1.4, no changes needed.
+  * Bump build dependencies to 5.11.1.
+  * Fix insecure-copyright-format-uri.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Mon, 25 Jun 2018 22:57:01 -0500
+
 qtquickcontrols-opensource-src (5.10.1-2) unstable; urgency=medium
 
   * Release to unstable.
