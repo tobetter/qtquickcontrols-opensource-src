@@ -1,3 +1,9 @@
+qtquickcontrols-opensource-src (5.11.1-2) unstable; urgency=medium
+
+  * Upload to Sid.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Wed, 25 Jul 2018 04:49:31 -0500
+
 qtquickcontrols-opensource-src (5.11.1-1) experimental; urgency=medium
 
   * Add my name to Uploaders.
