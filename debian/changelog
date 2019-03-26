@@ -1,3 +1,12 @@
+qtquickcontrols-opensource-src (5.12.2-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Bump Qt build-dependencies to 5.12.2.
+  * Update Homepage URL.
+  * Update .install files for doc packages to reflect module rename.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 26 Mar 2019 09:34:09 +0300
+
 qtquickcontrols-opensource-src (5.11.3-2) unstable; urgency=medium
 
   [ Simon Quigley ]

@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the examples of the Qt Toolkit.
+** This file is part of the test suite of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** Commercial License Usage
@@ -48,51 +48,28 @@
 **
 ****************************************************************************/
 
-#include "qtquickcontrolsapplication.h"
-#include <QtQml/QQmlApplicationEngine>
-#include <QQuickWindow>
-#include <QtCore/QElapsedTimer>
-#include <functional>
-#include <stdio.h>
+import QtQuick 2.2
+import QtQuick.Controls 1.2
 
-int runBenchmark(std::function<qint64()> f) {
-    {
-        auto r = f();
-        if (r >= 0)
-            printf("%d,", static_cast<int>(r));
-        else
-            return -1;
+TableView {
+    id: tableView
+    Component {
+        id: columnComponentWithDelegate
+        TableViewColumn {
+            delegate: Rectangle {
+                implicitWidth: 50
+                height: 10
+                color: "red"
+            }
+        }
     }
-
-    {
-        auto r = f();
-        if (r >= 0)
-            printf("%d\n", static_cast<int>(r));
-        else
-            return -1;
+    Component {
+        id: columnComponent
+        TableViewColumn { }
     }
-
-    return 0;
-}
-
-
-int main(int argc, char *argv[])
-{
-    QtQuickControlsApplication app(argc, argv);
-
-    auto startup = [&app]() -> qint64 {
-        QElapsedTimer timer;
-        timer.start();
-        QQmlApplicationEngine engine(QUrl("qrc:/main.qml"));
-        if (engine.rootObjects().size() != 1)
-            return -1;
-        QQuickWindow *window = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
-        QObject::connect(window, &QQuickWindow::frameSwapped,
-                         QCoreApplication::instance(), &QCoreApplication::quit);
-        if (app.exec() != 0)
-            return -1;
-        return timer.elapsed();
-    };
-
-    return runBenchmark(startup);
+    Component.onCompleted: {
+        addColumn(columnComponentWithDelegate.createObject(tableView, { title: "rects", width: 20 }));
+        addColumn(columnComponent.createObject(tableView, { title: "numbers" }));
+    }
+    model: 10
 }
