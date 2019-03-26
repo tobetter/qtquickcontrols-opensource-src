@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of the examples of the Qt Toolkit.
+** This file is part of the test suite of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** Commercial License Usage
@@ -48,51 +48,41 @@
 **
 ****************************************************************************/
 
-#include "qtquickcontrolsapplication.h"
-#include <QtQml/QQmlApplicationEngine>
-#include <QQuickWindow>
-#include <QtCore/QElapsedTimer>
-#include <functional>
-#include <stdio.h>
+import QtQuick 2.3
+import QtQuick.Controls 1.2
+import QtQuick.Dialogs 1.2
 
-int runBenchmark(std::function<qint64()> f) {
-    {
-        auto r = f();
-        if (r >= 0)
-            printf("%d,", static_cast<int>(r));
-        else
-            return -1;
+Dialog {
+    property bool handlerWasCalled: false
+    property var buttonCode
+    property var keyCode
+    property bool mustBlock: false
+    property string actionCalled: ""
+
+    visible: true
+    title: "Blue sky dialog"
+    standardButtons: buttonsFromTest
+
+    Item {
+        implicitWidth: 300
+        implicitHeight: 200
     }
 
-    {
-        auto r = f();
-        if (r >= 0)
-            printf("%d\n", static_cast<int>(r));
-        else
-            return -1;
+    onActionChosen: {
+        handlerWasCalled = true
+        buttonCode = action.button
+        keyCode = action.key
+        if (mustBlock) {
+            action.accepted = false
+        }
     }
 
-    return 0;
-}
-
-
-int main(int argc, char *argv[])
-{
-    QtQuickControlsApplication app(argc, argv);
-
-    auto startup = [&app]() -> qint64 {
-        QElapsedTimer timer;
-        timer.start();
-        QQmlApplicationEngine engine(QUrl("qrc:/main.qml"));
-        if (engine.rootObjects().size() != 1)
-            return -1;
-        QQuickWindow *window = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
-        QObject::connect(window, &QQuickWindow::frameSwapped,
-                         QCoreApplication::instance(), &QCoreApplication::quit);
-        if (app.exec() != 0)
-            return -1;
-        return timer.elapsed();
-    };
-
-    return runBenchmark(startup);
+    onAccepted: actionCalled = "accepted"
+    onApply: actionCalled = "apply"
+    onDiscard: actionCalled = "discard"
+    onHelp: actionCalled = "help"
+    onNo: actionCalled = "no"
+    onRejected: actionCalled = "rejected"
+    onReset: actionCalled = "reset"
+    onYes: actionCalled = "yes"
 }
