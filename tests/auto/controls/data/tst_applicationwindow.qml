@@ -303,6 +303,7 @@ TestCase {
     }
 
     function test_windowHeight2() {
+        skip("QTBUG-54714")
         var test_control = 'import QtQuick 2.2; \
         import QtQuick 2.2;                     \
         import QtQuick.Controls 1.2;            \
