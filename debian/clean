@@ -1,0 +1,7 @@
+doc/
+examples/quickcontrols/extras/dashboard/fonts/
+examples/quickcontrols/extras/gallery/fonts/
+src/controls/controls.qrc
+src/dialogs/dialogs.qrc
+src/extras/Styles/Flat/fonts/
+test_root/

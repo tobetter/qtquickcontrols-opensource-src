@@ -1,0 +1,93 @@
+Description: use packaged DejaVu Sans and OpenSans fonts
+Author: Dmitry Shachnev <mitya57@debian.org>
+Forwarded: not-needed
+Last-Update: 2019-05-16
+
+--- a/examples/quickcontrols/extras/dashboard/dashboard.qrc
++++ b/examples/quickcontrols/extras/dashboard/dashboard.qrc
+@@ -1,6 +1,5 @@
+ <RCC>
+     <qresource prefix="/">
+-        <file>fonts/DejaVuSans.ttf</file>
+         <file>images/fuel-icon.png</file>
+         <file>images/temperature-icon.png</file>
+         <file>qml/dashboard.qml</file>
+--- a/examples/quickcontrols/extras/dashboard/main.cpp
++++ b/examples/quickcontrols/extras/dashboard/main.cpp
+@@ -57,7 +57,7 @@
+ {
+     QGuiApplication app(argc, argv);
+ 
+-    QFontDatabase::addApplicationFont(":/fonts/DejaVuSans.ttf");
++    QFontDatabase::addApplicationFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+     app.setFont(QFont("DejaVu Sans"));
+ 
+     QQmlApplicationEngine engine(QUrl("qrc:/qml/dashboard.qml"));
+--- a/examples/quickcontrols/extras/gallery/gallery.qrc
++++ b/examples/quickcontrols/extras/gallery/gallery.qrc
+@@ -1,6 +1,5 @@
+ <RCC>
+     <qresource prefix="/">
+-        <file>fonts/OpenSans-Regular.ttf</file>
+         <file>images/background-light.png</file>
+         <file>images/background.png</file>
+         <file>images/center-light.png</file>
+--- a/examples/quickcontrols/extras/gallery/qml/gallery.qml
++++ b/examples/quickcontrols/extras/gallery/qml/gallery.qml
+@@ -378,7 +378,7 @@
+ 
+     FontLoader {
+         id: openSans
+-        source: "qrc:/fonts/OpenSans-Regular.ttf"
++        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf"
+      }
+ 
+     property var componentMap: {
+--- a/src/extras/Styles/Flat/Flat.pro
++++ b/src/extras/Styles/Flat/Flat.pro
+@@ -55,11 +55,7 @@
+ FLAT_STYLE += \
+     $$PWD/images/BusyIndicator_Normal-Large.png \
+     $$PWD/images/BusyIndicator_Normal-Medium.png \
+-    $$PWD/images/BusyIndicator_Normal-Small.png \
+-    $$PWD/fonts/OpenSans-Light.ttf \
+-    $$PWD/fonts/OpenSans-Regular.ttf \
+-    $$PWD/fonts/OpenSans-Semibold.ttf \
+-    $$PWD/fonts/LICENSE.txt \
++    $$PWD/images/BusyIndicator_Normal-Small.png
+ 
+ !static:RESOURCES += flatstyle.qrc
+ else: QML_FILES += $$FLAT_STYLE
+--- a/src/extras/Styles/Flat/FlatStyle.qml
++++ b/src/extras/Styles/Flat/FlatStyle.qml
+@@ -88,15 +88,15 @@
+     readonly property int radius: Math.round(scaleFactor * 3)
+ 
+     property FontLoader __openSansDemiBoldLoader: FontLoader {
+-        source: "fonts/OpenSans-Semibold.ttf"
++        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Semibold.ttf"
+     }
+ 
+     property FontLoader __openSansRegularLoader: FontLoader {
+-        source: "fonts/OpenSans-Regular.ttf"
++        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf"
+     }
+ 
+     property FontLoader __openSansLightLoader: FontLoader {
+-        source: "fonts/OpenSans-Light.ttf"
++        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Light.ttf"
+     }
+ 
+     readonly property int __renderType: Text.QtRendering
+--- a/src/extras/Styles/Flat/flatstyle.qrc
++++ b/src/extras/Styles/Flat/flatstyle.qrc
+@@ -43,9 +43,5 @@
+         <file>images/BusyIndicator_Normal-Large.png</file>
+         <file>images/BusyIndicator_Normal-Medium.png</file>
+         <file>images/BusyIndicator_Normal-Small.png</file>
+-        <file>fonts/LICENSE.txt</file>
+-        <file>fonts/OpenSans-Light.ttf</file>
+-        <file>fonts/OpenSans-Regular.ttf</file>
+-        <file>fonts/OpenSans-Semibold.ttf</file>
+     </qresource>
+ </RCC>

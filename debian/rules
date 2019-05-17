@@ -3,7 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+include /usr/share/dpkg/architecture.mk
 
 export CFLAGS := $(shell dpkg-buildflags --get CFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
 export CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
@@ -12,11 +12,6 @@ export QT_SELECT := qt5
 
 %:
 	dh $@ --with qmlcdeps
-
-override_dh_auto_clean:
-	dh_auto_clean
-	rm -rf doc src/controls/controls.qrc src/dialogs/dialogs.qrc
-	rm -rfv test_root
 
 override_dh_auto_configure:
 	dh_auto_configure -- QT_BUILD_PARTS+=tests
@@ -27,18 +22,20 @@ override_dh_auto_build-indep:
 override_dh_auto_install-indep:
 	make INSTALL_ROOT=$(CURDIR)/debian/tmp install_docs
 
-override_dh_auto_install-arch:
-	dh_auto_install
-	# Dashboard example is patched to use packaged DejaVu Sans font
-	rm -rfv debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/qt5/examples/quickcontrols/extras/dashboard/fonts/
-
 override_dh_auto_test-indep:
 
 override_dh_auto_test-arch:
 	$(MAKE) install INSTALL_ROOT=$(CURDIR)/test_root
-	# Make the tests non-fatal, see the 5.7.1~20161021-2 changelog.
+ifneq (,$(filter $(DEB_HOST_ARCH),mips mips64el mipsel powerpc ppc64 s390x))
+	# mips*: segmentation fault, see #868745
+	# powerpc, ppc64: some failures in extras::Tests_Picture and extras::Tests_StatusIndicator
+	# s390x: some failures in qtquickcontrols::Tests_TableView and qtquickcontrols::Tests_TreeView
 	-xvfb-run -a -s "-screen 0 1024x768x24 +extension RANDR +extension RENDER +extension GLX" \
 		dh_auto_test --no-parallel -- QML2_IMPORT_PATH=$(CURDIR)/test_root/usr/lib/$(DEB_HOST_MULTIARCH)/qt5/qml
+else
+	xvfb-run -a -s "-screen 0 1024x768x24 +extension RANDR +extension RENDER +extension GLX" \
+		dh_auto_test --no-parallel -- QML2_IMPORT_PATH=$(CURDIR)/test_root/usr/lib/$(DEB_HOST_MULTIARCH)/qt5/qml
+endif
 
 override_dh_missing:
 	dh_missing --fail-missing

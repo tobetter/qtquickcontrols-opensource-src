@@ -55,11 +55,7 @@ FLAT_STYLE += \
 FLAT_STYLE += \
     $$PWD/images/BusyIndicator_Normal-Large.png \
     $$PWD/images/BusyIndicator_Normal-Medium.png \
-    $$PWD/images/BusyIndicator_Normal-Small.png \
-    $$PWD/fonts/OpenSans-Light.ttf \
-    $$PWD/fonts/OpenSans-Regular.ttf \
-    $$PWD/fonts/OpenSans-Semibold.ttf \
-    $$PWD/fonts/LICENSE.txt \
+    $$PWD/images/BusyIndicator_Normal-Small.png
 
 !static:RESOURCES += flatstyle.qrc
 else: QML_FILES += $$FLAT_STYLE
