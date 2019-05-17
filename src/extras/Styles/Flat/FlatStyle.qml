@@ -88,15 +88,15 @@ QtObject {
     readonly property int radius: Math.round(scaleFactor * 3)
 
     property FontLoader __openSansDemiBoldLoader: FontLoader {
-        source: "fonts/OpenSans-Semibold.ttf"
+        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Semibold.ttf"
     }
 
     property FontLoader __openSansRegularLoader: FontLoader {
-        source: "fonts/OpenSans-Regular.ttf"
+        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf"
     }
 
     property FontLoader __openSansLightLoader: FontLoader {
-        source: "fonts/OpenSans-Light.ttf"
+        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Light.ttf"
     }
 
     readonly property int __renderType: Text.QtRendering
