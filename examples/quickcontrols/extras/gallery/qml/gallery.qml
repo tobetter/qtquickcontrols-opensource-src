@@ -378,7 +378,7 @@ Window {
 
     FontLoader {
         id: openSans
-        source: "qrc:/fonts/OpenSans-Regular.ttf"
+        source: "file:///usr/share/fonts/truetype/open-sans/OpenSans-Regular.ttf"
      }
 
     property var componentMap: {
