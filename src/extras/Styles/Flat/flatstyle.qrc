@@ -43,9 +43,5 @@
         <file>images/BusyIndicator_Normal-Large.png</file>
         <file>images/BusyIndicator_Normal-Medium.png</file>
         <file>images/BusyIndicator_Normal-Small.png</file>
-        <file>fonts/LICENSE.txt</file>
-        <file>fonts/OpenSans-Light.ttf</file>
-        <file>fonts/OpenSans-Regular.ttf</file>
-        <file>fonts/OpenSans-Semibold.ttf</file>
     </qresource>
 </RCC>

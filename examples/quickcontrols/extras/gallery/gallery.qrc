@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>fonts/OpenSans-Regular.ttf</file>
         <file>images/background-light.png</file>
         <file>images/background.png</file>
         <file>images/center-light.png</file>
