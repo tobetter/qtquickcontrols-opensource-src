@@ -11,23 +11,23 @@ Uploaders: Sune Vuorela <debian@pusling.com>,
 Build-Depends: debhelper (>= 11),
                dpkg-dev (>= 1.17.14),
                pkg-kde-tools (>= 0.15.26~),
-               qml-module-qt-labs-folderlistmodel (>= 5.12.4~),
-               qml-module-qt-labs-settings (>= 5.12.4~),
-               qml-module-qtgraphicaleffects (>= 5.12.4~),
-               qml-module-qtqml-models2 (>= 5.12.4~),
-               qml-module-qtquick-layouts (>= 5.12.4~),
-               qml-module-qtquick-window2 (>= 5.12.4~),
-               qml-module-qttest (>= 5.12.4~),
-               qtbase5-dev (>= 5.12.4+dfsg~),
-               qtbase5-private-dev (>= 5.12.4+dfsg~),
-               qtdeclarative5-dev-tools (>= 5.12.4~),
-               qtdeclarative5-private-dev (>= 5.12.4~),
+               qml-module-qt-labs-folderlistmodel (>= 5.12.5~),
+               qml-module-qt-labs-settings (>= 5.12.5~),
+               qml-module-qtgraphicaleffects (>= 5.12.5~),
+               qml-module-qtqml-models2 (>= 5.12.5~),
+               qml-module-qtquick-layouts (>= 5.12.5~),
+               qml-module-qtquick-window2 (>= 5.12.5~),
+               qml-module-qttest (>= 5.12.5~),
+               qtbase5-dev (>= 5.12.5+dfsg~),
+               qtbase5-private-dev (>= 5.12.5+dfsg~),
+               qtdeclarative5-dev-tools (>= 5.12.5~),
+               qtdeclarative5-private-dev (>= 5.12.5~),
                xauth,
                xvfb
-Build-Depends-Indep: qtbase5-doc-html (>= 5.12.4+dfsg~) <!nodoc>,
-                     qtdeclarative5-doc-html (>= 5.12.4~) <!nodoc>,
-                     qttools5-dev-tools (>= 5.12.4~) <!nodoc>
-Standards-Version: 4.3.0
+Build-Depends-Indep: qtbase5-doc-html (>= 5.12.5+dfsg~) <!nodoc>,
+                     qtdeclarative5-doc-html (>= 5.12.5~) <!nodoc>,
+                     qttools5-dev-tools (>= 5.12.5~) <!nodoc>
+Standards-Version: 4.4.1
 Homepage: https://doc.qt.io/qt-5/qtquickcontrols1-index.html
 Vcs-Git: https://salsa.debian.org/qt-kde-team/qt/qtquickcontrols.git
 Vcs-Browser: https://salsa.debian.org/qt-kde-team/qt/qtquickcontrols
